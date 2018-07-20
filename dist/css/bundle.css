@@ -1,0 +1,555 @@
+@font-face {
+  font-family: 'Maitree';
+  font-style: normal;
+  font-weight: 400;
+  src: local("Maitree"), url(../fonts/MjQGmil5tffhpBrknsqsfamD.woff2) format("woff2");
+  unicode-range: U+0E01-0E5B, U+200C-200D, U+25CC; }
+
+@font-face {
+  font-family: 'Maitree';
+  font-style: normal;
+  font-weight: 400;
+  src: local("Maitree"), url(../fonts/MjQGmil5tffhpBrkntGsfamD.woff2) format("woff2");
+  unicode-range: U+0102-0103, U+0110-0111, U+1EA0-1EF9, U+20AB; }
+
+@font-face {
+  font-family: 'Maitree';
+  font-style: normal;
+  font-weight: 400;
+  src: local("Maitree"), url(../fonts/MjQGmil5tffhpBrknt6sfQ.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+.flexCentered, .header, .blockSearch .containerSearch, .containerCardWeater .containerTemperatureToday, .containerCardWeater .blockForecast, .containerCardWeater .itemForecast {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+
+.inlineFlexCentered, .blockSearch .wrapper, .blockSearch .wrapper .btnBack, .containerInput .buttonClear, .containerCardWeater .itemForecast .cellForecast, .containerMessage .deleteMessage {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center; }
+
+.defaultBtn, .header .updateCard,
+.header .addCard, .blockSearch .wrapper .btnBack, .containerInput .buttonClear, .containerCardWeater .deleteCard, .containerMessage .deleteMessage {
+  /*outline: none;*/
+  /*border: none;*/
+  /*background-repeat: no-repeat;*/
+  cursor: pointer;
+  width: 25px;
+  height: 25px; }
+  .defaultBtn:active, .header .updateCard:active,
+  .header .addCard:active, .blockSearch .wrapper .btnBack:active, .containerInput .buttonClear:active, .containerCardWeater .deleteCard:active, .containerMessage .deleteMessage:active {
+    opacity: 0.7; }
+
+@-webkit-keyframes circle {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+
+@keyframes circle {
+  from {
+    -webkit-transform: rotate(0deg);
+            transform: rotate(0deg); }
+  to {
+    -webkit-transform: rotate(360deg);
+            transform: rotate(360deg); } }
+
+body, html {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif; }
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box; }
+
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-type: none; }
+
+button::-moz-focus-inner {
+  border: none; }
+
+.app {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  font-family: 'Maitree', 'sans-serif';
+  overflow: hidden; }
+
+@media screen and (max-device-width: 480px) {
+  .app {
+    /*background-color: tomato;*/ } }
+
+.header {
+  position: relative;
+  z-index: 1;
+  height: 60px;
+  width: 100%;
+  background-color: #27689b;
+  padding: 0 0.6em;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+          box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  .header .title {
+    display: inline-block;
+    color: white;
+    font-size: 1.3em; }
+  .header .wrapperButtons {
+    display: -webkit-inline-box;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    height: 100%;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .header .addCard {
+    /*background-image: url('/images/svg/plus.svg');*/ }
+  .header .updateCard {
+    /*background-image: url('/images/svg/refresh.svg');*/
+    -webkit-transition: 1s;
+    -o-transition: 1s;
+    transition: 1s;
+    /*transform: scale(1.2);*/ }
+    .header .updateCard.activeUpdate {
+      -webkit-animation: circle 1s infinite linear;
+              animation: circle 1s infinite linear; }
+  .header .updateCard,
+  .header .addCard {
+    margin-left: 7px;
+    /*width: 25px;*/
+    /*height: 25px;*/
+    /*background-color: tomato;*/
+    /*background-color: transparent;*/ }
+
+.blockSearch {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  background-color: rgba(38, 36, 36, 0.64);
+  overflow: auto;
+  -webkit-transition: 0.25s opacity;
+  -o-transition: 0.25s opacity;
+  transition: 0.25s opacity;
+  z-index: 2;
+  opacity: 1; }
+  .blockSearch.disabled {
+    z-index: -1;
+    opacity: 0; }
+  .blockSearch .containerSearch {
+    padding: 0 0.6em;
+    background-color: #27689b;
+    position: relative;
+    height: 60px; }
+  .blockSearch .wrapper {
+    position: absolute;
+    right: 0.6em;
+    top: 0;
+    height: 100%; }
+    .blockSearch .wrapper .btnBack {
+      /*width: 25px;*/
+      /*height: 25px;*/
+      /*background-color: tomato;*/
+      /*background-color: transparent;*/
+      /*background-position: center center;*/
+      /*background-image: url('/images/svg/back.svg');*/ }
+  .blockSearch .containerListSities {
+    text-align: center;
+    padding: 0.3em;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    overflow: auto; }
+
+.containerInput {
+  position: relative;
+  display: inline-block;
+  width: 500px; }
+  .containerInput .inputSearch {
+    font-size: 20px;
+    padding: 0.45em 2em 0.45em 0.45em;
+    width: 100%;
+    border: 2px solid white;
+    border-radius: 4px;
+    outline: none; }
+    .containerInput .inputSearch:focus {
+      border-color: gold; }
+  .containerInput .buttonClear {
+    /*background-color: transparent;*/
+    /*background-image: url('/images/svg/cancel.svg');*/
+    /*background-position: center;*/
+    width: 35px;
+    height: 85%;
+    position: absolute;
+    right: 2px;
+    /*padding: 0 15px;*/
+    top: 7.5%; }
+
+.containerCardWeater {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  overflow: auto;
+  background-color: #343952; }
+  .containerCardWeater .preloader {
+    padding: 1.5em; }
+  .containerCardWeater .itemCardWeather {
+    padding: 0.5em;
+    margin: 0.7em 0.7em 1.4em 0.7em;
+    position: relative;
+    background-color: rgba(255, 255, 255, 0.18);
+    color: white;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
+  .containerCardWeater .deleteCard {
+    /*background-color: white;*/
+    /*width: 26px;*/
+    /*height: 26px;*/
+    /*background-image: url('/images/svg/cancel.svg');*/
+    /*background-position: center, center;*/
+    border-radius: 5px;
+    position: absolute;
+    top: 0.35em;
+    padding: 5px;
+    right: 0.35em;
+    /*border: 1px solid white;*/
+    border-radius: 4px;
+    /*box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);*/
+    -webkit-box-shadow: 0px 0px 4px 0px #2b2b2b;
+            box-shadow: 0px 0px 4px 0px #2b2b2b; }
+  .containerCardWeater .cityName {
+    font-size: 1.5em;
+    word-wrap: break-word;
+    white-space: nowrap;
+    overflow: hidden;
+    -o-text-overflow: ellipsis;
+       text-overflow: ellipsis;
+    padding-right: 30px; }
+  .containerCardWeater .containerDate .content {
+    display: block;
+    line-height: 1.4; }
+  .containerCardWeater .containerTemperatureToday {
+    margin-top: 0.3em;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    -webkit-box-align: start;
+        -ms-flex-align: start;
+            align-items: flex-start; }
+  .containerCardWeater .temperatureToday {
+    font-size: 2.2em;
+    line-height: 1.4; }
+  .containerCardWeater .containerMinMaxToday {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; }
+    .containerCardWeater .containerMinMaxToday .wrapper {
+      margin: 0.1em 0.4em 0 0.1em; }
+  .containerCardWeater .condition {
+    /*text-align: center;*/ }
+  .containerCardWeater .imgToday {
+    width: 85px;
+    -webkit-transform: scale(1.33);
+        -ms-transform: scale(1.33);
+            transform: scale(1.33); }
+  .containerCardWeater .descriptionAtmosphere .content {
+    margin-top: 0.3em;
+    padding: 0.1em 0;
+    font-size: 1.1em;
+    border-bottom: 1px dotted #bdbbbb; }
+  .containerCardWeater .descriptionAtmosphere .title {
+    width: 140px;
+    display: inline-block; }
+  .containerCardWeater .row {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+        -ms-flex-pack: center;
+            justify-content: center;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center; }
+  .containerCardWeater .cell:nth-child(1),
+  .containerCardWeater .cell:nth-child(2) {
+    margin-right: 3%;
+    /*margin-right: 2em;*/
+    /*background-color: #FFF;*/
+    width: 350px; }
+  .containerCardWeater .cell:nth-child(2) {
+    /*margin-right: 3%;*/
+    /*margin-right: 2em;*/
+    /*background-color: #FFF;*/
+    /*width: 350px;*/ }
+  .containerCardWeater .wrapperForecast {
+    /*background-color: lightgrey;*/
+    min-width: 40%; }
+  .containerCardWeater .blockForecast {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column; }
+  .containerCardWeater .titleForecast {
+    margin: 0.5em 0;
+    font-size: 1.1em;
+    text-align: center; }
+  .containerCardWeater .listForecast {
+    /*display: flex;*/
+    /*justify-content: space-between;*/
+    /*display: inline-block;*/
+    /*float: right;*/ }
+  .containerCardWeater .itemForecast {
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    border-bottom: 1px dotted #bdbbbb;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between; }
+    .containerCardWeater .itemForecast .dateForecast {
+      margin: 0 0.6em; }
+    .containerCardWeater .itemForecast .maxIcon,
+    .containerCardWeater .itemForecast .minIcon {
+      font-size: 0.7em; }
+    .containerCardWeater .itemForecast .containerMinMax {
+      display: -webkit-inline-box;
+      display: -ms-inline-flexbox;
+      display: inline-flex; }
+    .containerCardWeater .itemForecast .minTemperature,
+    .containerCardWeater .itemForecast .maxTemperature {
+      margin: 0.35em 0.5em;
+      min-width: 60px; }
+    .containerCardWeater .itemForecast .cellForecast:nth-child(1) {
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column;
+      -webkit-box-align: start;
+          -ms-flex-align: start;
+              align-items: flex-start; }
+  .containerCardWeater .imgForecast {
+    width: 50px;
+    margin: 0 0.5em 0 2em; }
+
+.preloader {
+  text-align: center; }
+  .preloader .circle {
+    -webkit-animation: circle 3s infinite linear;
+            animation: circle 3s infinite linear; }
+
+.listSities {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  text-align: left;
+  background-color: white;
+  width: 800px; }
+  .listSities .itemListSities {
+    font-size: 19px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #b3b1b1;
+    color: #1d1b1b; }
+    .listSities .itemListSities:hover {
+      background-color: #e1e4f7; }
+    .listSities .itemListSities.active {
+      background-color: #e1e4f7; }
+
+.containerMessage {
+  position: absolute;
+  top: -300px;
+  right: 0.3em;
+  width: 250px;
+  padding: 1.35em 0.5em 0.5em 0.5em;
+  z-index: 3;
+  background-color: white;
+  border-radius: 4px;
+  color: #403939;
+  -webkit-box-shadow: 0px 0px 7px 1px #4a4747;
+          box-shadow: 0px 0px 7px 1px #4a4747;
+  -webkit-transition: 0.2s;
+  -o-transition: 0.2s;
+  transition: 0.2s;
+  display: none; }
+  .containerMessage.active {
+    display: inline-block;
+    top: 0.3em; }
+  .containerMessage .deleteMessage {
+    position: absolute;
+    top: 0.1em;
+    right: 0.1em;
+    padding: 0.3em;
+    border-radius: 3px;
+    border: 1px solid #403939; }
+  .containerMessage .message {
+    font-size: 0.9em;
+    white-space: pre-line; }
+
+.containerNotFound {
+  text-align: center; }
+  .containerNotFound .content {
+    padding: 0.7em 2em;
+    display: inline-block;
+    background-color: white; }
+
+/*style for small devices*/
+@media (max-width: 650px) {
+  .blockSearch .containerSearch {
+    text-align: left;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+        -ms-flex-align: center;
+            align-items: center;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: reverse;
+        -ms-flex-direction: row-reverse;
+            flex-direction: row-reverse; }
+  .blockSearch .wrapper {
+    position: relative;
+    right: initial; }
+    .blockSearch .wrapper .btnBack {
+      height: 100%; } }
+
+@media (max-width: 860px) {
+  .listSities {
+    width: 100%; } }
+
+@media (max-width: 650px) {
+  .containerInput {
+    width: 86.5%; } }
+
+@media (max-width: 1400px) {
+  .containerCardWeater .wrapperForecast {
+    width: 100%; }
+  .containerCardWeater .row {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap; } }
+
+@media (max-width: 850px) {
+  .containerCardWeater .cell:nth-child(1),
+  .containerCardWeater .cell:nth-child(2) {
+    width: 280px; }
+  .containerCardWeater .itemCardWeather {
+    padding: 0; } }
+
+@media (max-width: 650px) {
+  .containerCardWeater .itemCardWeather {
+    padding: 0 0.2em; }
+  .containerCardWeater .cell:nth-child(1),
+  .containerCardWeater .cell:nth-child(2) {
+    margin: 0 0 0.7em 0;
+    width: 100%; }
+  .containerCardWeater .blockTemperature {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: distribute;
+        justify-content: space-around;
+    margin-top: 0.6em; }
+  .containerCardWeater .containerTemperatureToday {
+    margin: 0;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between; }
+  .containerCardWeater .temperatureToday {
+    line-height: initial; }
+  .containerCardWeater .containerMinMaxToday .wrapper {
+    margin: 0 0.4em 0 0; } }
+
+@media (max-width: 600px) {
+  .containerCardWeater .listForecast {
+    width: 100%; }
+  .containerCardWeater .cellForecast .containerMinMax {
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column; }
+  .containerCardWeater .itemForecast {
+    -ms-flex-pack: distribute;
+        justify-content: space-around; }
+    .containerCardWeater .itemForecast .cellForecast .dayForecast {
+      margin-left: 0; }
+    .containerCardWeater .itemForecast .cellForecast:nth-child(1) {
+      -ms-flex-wrap: wrap;
+          flex-wrap: wrap;
+      width: 50%;
+      -webkit-box-pack: start;
+          -ms-flex-pack: start;
+              justify-content: flex-start; }
+    .containerCardWeater .itemForecast .dayForecast,
+    .containerCardWeater .itemForecast .dateForecast {
+      margin-right: 0; }
+    .containerCardWeater .itemForecast .descriptionForecast {
+      width: 100%;
+      margin-left: 0; } }
+
+@media (max-width: 470px) {
+  .containerCardWeater .cityName {
+    font-size: 1.35em; }
+  .containerCardWeater .itemCardWeather {
+    margin: 0.7em 0.25em 1.4em 0.25em;
+    padding: 0 0.2em; }
+  .containerCardWeater .imgForecast {
+    width: 40px;
+    margin: 0 0 0 0.5em; }
+  .containerCardWeater .itemForecast {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: row;
+            flex-direction: row;
+    margin-bottom: 0.6em;
+    -webkit-box-pack: justify;
+        -ms-flex-pack: justify;
+            justify-content: space-between; }
+    .containerCardWeater .itemForecast .cellForecast {
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column; }
+      .containerCardWeater .itemForecast .cellForecast:nth-child(2) {
+        -webkit-box-orient: horizontal;
+        -webkit-box-direction: normal;
+            -ms-flex-direction: row;
+                flex-direction: row; }
+    .containerCardWeater .itemForecast .containerMinMax {
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+          -ms-flex-direction: column;
+              flex-direction: column; } }
+
+/*# sourceMappingURL=bundle.css.map*/

@@ -1,0 +1,21 @@
+@media (max-width: 650px) {
+  .blockSearch{
+
+    .containerSearch{
+      text-align: left;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-direction: row-reverse;
+    }
+
+    .wrapper{
+      position: relative;
+      right: initial;
+
+      .btnBack{
+        height: 100%;
+      }
+    }
+  }
+}

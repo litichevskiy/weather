@@ -1,0 +1,56 @@
+.blockSearch{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  z-index: 2;
+  background-color: rgba(38, 36, 36, 0.64);
+  overflow: auto;
+  transition: $transition-time opacity;
+  z-index: 2;
+  opacity: 1;
+
+  &.disabled{
+    z-index: -1;
+    opacity: 0;
+  }
+
+  .containerSearch{
+    @extend .flexCentered;
+    padding: 0 0.6em;
+    background-color: $bg-color-header;
+    position: relative;
+    height: $header-height;
+  }
+
+  .wrapper{
+    @extend .inlineFlexCentered;
+    position: absolute;
+    right: 0.6em;
+    top: 0;
+    height: 100%;
+
+    .btnBack{
+      @extend .defaultBtn;
+      @extend .inlineFlexCentered;
+      /*width: 25px;*/
+      /*height: 25px;*/
+      /*background-color: tomato;*/
+      /*background-color: transparent;*/
+      /*background-position: center center;*/
+      /*background-image: url('/images/svg/back.svg');*/
+    }
+  }
+
+  .containerListSities{
+    text-align: center;
+    padding: 0.3em;
+    position: absolute;
+    top: $header-height;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+  }
+}

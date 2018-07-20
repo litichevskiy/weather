@@ -1,0 +1,23 @@
+.listSities{
+  display: inline-flex;
+  flex-direction: column;
+  text-align: left;
+  background-color: white;
+  width: 800px;
+
+  .itemListSities{
+    font-size: 19px;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #b3b1b1;
+    color: #1d1b1b;
+
+    &:hover{
+      background-color: #e1e4f7;
+    }
+
+    &.active{
+      background-color: #e1e4f7;
+    }
+  }
+}

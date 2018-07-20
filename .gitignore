@@ -1,0 +1,6 @@
+/node_modules
+/certificate
+.tern-project
+Procfile
+*.map
+.server.js

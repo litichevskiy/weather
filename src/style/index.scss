@@ -1,0 +1,18 @@
+@import 'initFonts.scss';
+@import 'vars.scss';
+@import 'defaultClasses.scss';
+@import 'reset.scss';
+@import 'app.scss';
+@import './components/header/header.scss';
+@import './components/blockSearch/blockSearch.scss';
+@import './components/inputSearch/inputSearch.scss';
+@import './components/listCardWeater/listCardWeater.scss';
+@import './components/preloader/preloader.scss';
+@import './components/listSities/listSities.scss';
+@import './components/message/message.scss';
+@import './components/notFound/notFound.scss';
+/*style for small devices*/
+@import './components/blockSearch/smallDevices.scss';
+@import './components/listSities/smallDevices.scss';
+@import './components/inputSearch/smallDevices.scss';
+@import './components/listCardWeater/smallDevices.scss';

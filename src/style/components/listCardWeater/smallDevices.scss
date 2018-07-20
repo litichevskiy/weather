@@ -1,0 +1,128 @@
+.containerCardWeater{
+  @media (max-width: 1400px) {
+    .wrapperForecast{
+      width: 100%;
+    }
+
+    .row{
+      flex-wrap: wrap;
+    }
+  }
+
+  @media (max-width: 850px) {
+    .cell:nth-child(1),
+    .cell:nth-child(2){
+      width: 280px;
+    }
+
+    .itemCardWeather{
+      padding: 0;
+    }
+  }
+
+  @media (max-width: 650px) {
+    .itemCardWeather{
+      padding: 0 0.2em;
+    }
+
+    .cell:nth-child(1),
+    .cell:nth-child(2){
+      margin: 0 0 0.7em 0;
+      width: 100%;
+    }
+
+    .blockTemperature{
+      display: flex;
+      justify-content: space-around;
+      margin-top: 0.6em;
+    }
+
+    .containerTemperatureToday{
+      margin: 0;
+      justify-content: space-between;
+    }
+
+    .temperatureToday{
+      line-height: initial;
+    }
+
+    .containerMinMaxToday{
+
+      .wrapper{
+        margin: 0 0.4em 0 0;
+      }
+    }
+  }
+
+  @media (max-width: 600px) {
+    .listForecast{
+      width: 100%;
+    }
+
+    .cellForecast{
+      .containerMinMax{
+        flex-direction: column;
+      }
+    }
+      .itemForecast{
+        justify-content: space-around;
+
+        .cellForecast{
+
+          .dayForecast{
+            margin-left: 0;
+          }
+
+          &:nth-child(1){
+            flex-wrap: wrap;
+            width: 50%;
+            justify-content: flex-start;
+          }
+        }
+
+        .dayForecast,
+        .dateForecast{
+          margin-right: 0;
+        }
+
+        .descriptionForecast{
+          width: 100%;
+          margin-left: 0;
+        }
+      }
+  }
+
+  @media (max-width: 470px) {
+    .cityName{
+      font-size: 1.35em;
+    }
+
+    .itemCardWeather{
+      margin: 0.7em 0.25em 1.4em 0.25em;
+      padding: 0 0.2em;
+    }
+
+    .imgForecast{
+      width: 40px;
+      margin: 0 0 0 0.5em;
+    }
+
+    .itemForecast{
+      flex-direction: row;
+      margin-bottom: 0.6em;
+      justify-content: space-between;
+
+      .cellForecast{
+        flex-direction: column;
+
+        &:nth-child(2){
+          flex-direction: row;
+        }
+      }
+
+      .containerMinMax{
+        flex-direction: column;
+      }
+    }
+  }
+}
