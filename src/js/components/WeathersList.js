@@ -101,7 +101,7 @@ function templateCard( data ) {
 
   const { location, item, atmosphere, wind, astronomy } = data;
     const today = format.formateToday( data.lastBuildDate );
-    let forecast = item.forecast.slice(1, 7);
+    let forecast = item.forecast.slice(1,);
     let todayMinMax = item.forecast[0];
 
     const template =

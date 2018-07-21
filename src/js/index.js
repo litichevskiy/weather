@@ -25,10 +25,11 @@ window.addEventListener('offline',() => {
   pubsub.publish('show-message', { message: `Connection state: \n offline` });
 });
 
+// alert('start app')
 storage.init()
 .then( list => {
-  store.setCities( list );
   list = list || [];
+  pubsub.publish('init-app', list );
   list.forEach( item => {
     pubsub.publish('create-card-weater', item );
   });
@@ -58,3 +59,49 @@ storage.init()
 //     })
 //     .catch(error => console.error(error) )
 // }
+
+
+// function func1(x) {
+//   return new Promise((resolve,reject) => {
+//     setTimeout(() => {
+//       return resolve( x );
+//     },1000)
+//   });
+// };
+// function func2(x) {
+//   return new Promise((resolve,reject) => {
+//     setTimeout(() => {
+//       return resolve( x );
+//     },1500)
+//   });
+// };
+// function func3(x) {
+//   return new Promise((resolve,reject) => {
+//     setTimeout(() => {
+//       return reject('ERROR------');
+//     },300)
+//   });
+// }
+
+// async function add1( ) {
+//   let a,b,c;
+//   try{
+//     a = await func1(1);
+//     b = await func2(2);
+//     c = await func3(3);
+
+//   } catch( error ) {
+//     // debugger
+//     console.log( error )
+//   }
+//   // debugger
+//   return a + b + c;
+// }
+
+// add1()
+// .then(response => {
+//   console.log(`response ${response}` );
+// })
+// .catch(error => {
+//   console.log(`error ${error}`)
+// });

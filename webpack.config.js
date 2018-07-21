@@ -11,7 +11,7 @@ const IS_PRODUCTION = NODE_ENV === "production";
 // const PUBLIC_PATH = '/dist/';
 
 module.exports = {
-  entry: ['./src/js/index.js', './src/style/index.scss'],
+  entry: ['babel-polyfill', './src/js/index.js', './src/style/index.scss'],
   output: {
     path: path.resolve(__dirname, './dist/js'),
     filename: 'bundle.js',
@@ -48,7 +48,7 @@ module.exports = {
         use: {
             loader: 'babel-loader',
             options: {
-                presets: ['es2015','stage-0','env']
+                presets: ['es2015', 'stage-0','env']
             }
         }
       },

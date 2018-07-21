@@ -3,7 +3,7 @@
   top: -300px;
   right: 0.3em;
   width: 250px;
-  padding: 1.35em 0.5em 0.5em 0.5em;
+  padding: 1.65em 0.5em 0.5em 0.5em;
   z-index: 3;
   background-color: white;
   border-radius: 4px;
@@ -21,15 +21,15 @@
     @extend .defaultBtn;
     @extend .inlineFlexCentered;
     position: absolute;
-    top: 0.1em;
-    right: 0.1em;
+    top: 0.35em;
+    right: 0.35em;
     padding: 0.3em;
     border-radius: 3px;
     border: 1px solid #403939;
   }
 
   .message{
-    font-size: 0.9em;
+    font-size: 0.95em;
     white-space: pre-line;
   }
 }

@@ -1,24 +1,88 @@
 const pubsub = new ( require('./utils/pubSub') );
 const serverApi = require('./serverApi');
 const storage = require('./storage');
-const TEXT_ERROR_MESSAGE = `Oops! \n Something went wrong. \n Please try again`;
+const errorMessages = {
+  unknow() { return `Oops! \n Something went wrong. \n Please try again`},
+  unknowCiti(siti) { return `Weather for "${siti}" is not available`},
+  weatherAdded(siti) {return `Weather for "${siti}" already exists`},
+};
 
 const store = {
   isShowBlockSearch: false,
   listSities: [],
-  weatherCardId: 0,
   date: new Date,
   memoryCities: {},
+  weatherFor: [],
+  notFound: false,
 
-  setMemoryCities( data ) {
-    if( !data.count ) return;
-    let query = data._links.self.href.match(/=(.*)&/)[1];
-    let list = data._embedded['city:search-results'];
-    this.memoryCities[query] = list;
+  async addNewCiti( link, name, geonameid ) {
+    let city, weather;
+    try{
+      city = await serverApi.getCity( link );
+      if( !city ) throw new Error();
+      const { latitude, longitude } = city['location']['latlon'];
+      weather = await serverApi.getWeather(`(${latitude}, ${longitude})`);
+      if( !weather ) throw new Error();
+      weather = weather.query.results.channel;
+      weather._name = name;
+      weather.geonameid = geonameid;
+    } catch( error ) {
+      debugger
+      console.log( error );
+    }
+    return weather;
   },
 
-  setCities( list ) {
-    // debugger
+  async getWeather( coord ) {
+    return await serverApi.getWeather( coord );
+  },
+
+  async updateWeatherCities() {
+    let weatherList, response, coord, result = [];
+    try{
+      weatherList = await storage.getStorage();
+      if( !weatherList ) throw new Error();
+      for( let item of weatherList ) {
+        coord = item.coord;
+        response = await this.getWeather(`(${coord.lat}, ${coord.long})`);
+        if( !response ) throw new Error();
+        response = response.query.results.channel;
+        response.id = item.id;
+        response.geonameid = item.geonameid;
+        response._name = item._name;
+        result.push( response );
+      }
+    } catch( error ) {
+      debugger
+      console.log( error );
+      result = false;
+    }
+    return result;
+  },
+
+  setWeatherCard( response, num ) {
+    const {astronomy,atmosphere,location,units,wind,item,lastBuildDate,_name,geonameid} = response;
+    const condition = item.condition;
+    const id = num || createId();
+    const forecast = item.forecast.splice( 0, 6 );
+    const coord = { lat: item.lat, long: item.long }
+    return {
+      coord,astronomy,atmosphere,location,units,wind,item:{condition,forecast},lastBuildDate,id,geonameid,_name
+    };
+  },
+
+  async getCitiesBySubstring( substring ) {
+    let response, list;
+    try{
+      response = await serverApi.getCitiesBySubstring( substring );
+      if( !response ) throw new Error();
+      list = response._embedded['city:search-results'];
+      if( response.count > 0 ) this.memoryCities[substring] = list;
+    } catch( error ) {
+      debugger
+      console.log( error );
+    }
+    return list;
   },
 
   init() {
@@ -35,124 +99,88 @@ const store = {
     });
 
     pubsub.subscribe('new-substring-on-search-cityes', ( data ) => {
+      pubsub.publish('disabled-cityes-not-found');
+      this.notFound = false;
       let substring = data.key;
-      if ( !substring ) return pubsub.publish('create-list-cityes', []);
-      if( this.memoryCities[substring] ) {
+      if ( !substring ) pubsub.publish('create-list-cityes', []);
+      else if( this.memoryCities[substring] ) {
         this.listSities = this.memoryCities[substring];
         pubsub.publish('create-list-cityes', this.listSities);
-        pubsub.publish('disabled-cityes-not-found');
-        return;
       }
-
-      this.listSities = [];
-      pubsub.publish('create-list-cityes', this.listSities);
-      pubsub.publish('start-load-list-sities');
-      serverApi.getCitiesBySubstring( substring )
-      .then( response => {
-
-        this.setMemoryCities( response );
-
-        this.listSities = response._embedded['city:search-results'];
-        if( !this.listSities.length ) {
-          pubsub.publish('enabled-cityes-not-found');
-          pubsub.publish('stop-load-list-sities');
-        }
-        else{
-          pubsub.publish('disabled-cityes-not-found');
-          pubsub.publish('create-list-cityes', this.listSities);
-          pubsub.publish('stop-load-list-sities');
-        }
-      })
-      .catch(error => {
-        debugger
-        console.error(error)
+      else{
         this.listSities = [];
-        pubsub.publish('stop-load-list-sities');
-        pubsub.publish('show-message', { message: TEXT_ERROR_MESSAGE });
         pubsub.publish('create-list-cityes', this.listSities);
-        pubsub.publish('hide-block-search');
-      });
+        pubsub.publish('start-load-list-sities');
+        this.getCitiesBySubstring( substring )
+        .then( response => {
+          pubsub.publish('stop-load-list-sities');
+          if( !response ) {
+            pubsub.publish('hide-block-search');
+            pubsub.publish('show-message', { message: errorMessages.unknow() });
+          }
+          else if( response.length > 0 ) {
+            this.listSities = response;
+            pubsub.publish('create-list-cityes', this.listSities);
+          }
+          else if( response.length < 1 ) {
+            pubsub.publish('enabled-cityes-not-found');
+            this.notFound = true;
+          }
+        });
+      }
     });
 
     pubsub.subscribe('selected-city', ( data ) => {
+      if( this.notFound ) return;
       this.memoryCities = {};
-      let link = this.listSities[+data.index]['_links']['city:item']['href'];
-      // let QQQ = this.listSities[+data.index]['matching_full_name']
-      console.log( this.listSities[+data.index] )
-      // debugger
+      let selectedSiti = this.listSities[+data.index];
+      let link = selectedSiti['_links']['city:item']['href'];
+      let geoId = getGeonameId( link );
+      let fullName = selectedSiti['matching_full_name'];
       this.listSities = [];
       pubsub.publish('hide-block-search');
       pubsub.publish('create-list-cityes', this.listSities );
+      if ( this.weatherFor.includes( geoId ) ) {
+        pubsub.publish('show-message', {message: errorMessages.weatherAdded( fullName )});
+        return;
+      }
       pubsub.publish('start-load-card-weather');
-
-      serverApi.getSity( link )
-      .then( response => {
-        let code = response._links['city:country']['href'];
-        code = code.match(/[A-Z]{2}/)[0];
-        // debugger
-        console.log( response );
-        console.log( `${response.name}, ${code}` );
-
-        serverApi.getWeather( `${response.name}, ${code}` )
-        .then( response => {
-          let data = response.query.results.channel;
-          data.id = this.weatherCardId++;
-
-          // let _city = data.location.city;
-
-          // debugger
-          pubsub.publish('end-load-card-weather');
-          pubsub.publish('create-card-weater', data );
-          storage.setItem( data )
-        })
-        .catch(error => {
-          debugger
-          console.error(error)
-          pubsub.publish('end-load-card-weather');
-          pubsub.publish('show-message', { message: TEXT_ERROR_MESSAGE });
-        });
-      })
-      .catch(error => {
-        debugger
-        console.error(error)
+      this.addNewCiti( link, fullName, geoId )
+      .then(response => {
         pubsub.publish('end-load-card-weather');
-        pubsub.publish('show-message', { message: TEXT_ERROR_MESSAGE });
+        if( !response ) {
+          pubsub.publish('show-message', {message: errorMessages.unknow()});
+        }
+        else if( !response.item ) {
+          pubsub.publish('show-message',{message:errorMessages.unknowCiti(response._name)});
+        }
+        else{
+          this.date = new Date;
+          this.weatherFor.push( geoId );
+          let weatherCard = this.setWeatherCard( response );
+          pubsub.publish('create-card-weater', weatherCard );
+          storage.setItem( weatherCard );
+        }
       });
     });
 
     pubsub.subscribe('update-all-weather-card', () => {
-      storage.getStorage()
+      pubsub.publish('start-updated-all-weather-card');
+      this.updateWeatherCities()
       .then( response => {
-        const length = response.length -1;
-        let countUpdated = 0;
-        response.forEach( item => {
-          pubsub.publish('start-updated-all-weather-card')
-          const { city, region } = item.location;
-          const place = `${city}, ${region}`;
-          const id = item.id;
-            serverApi.getWeather( place )
-            .then( response => {
-              let data = response.query.results.channel;
-              data.id = id;
-              this.date = new Date;
-              pubsub.publish('update-card-weater', data );
-              if( countUpdated === length ) pubsub.publish('end-updated-all-weather-card');
-              countUpdated++
-              storage.updateItem( id, data )
-            })
-            .catch(error => {
-              debugger
-              console.error(error)
-              pubsub.publish('show-message', { message: TEXT_ERROR_MESSAGE });
-              pubsub.publish('end-updated-all-weather-card');
-            });
-        })
-      })
-      .catch(error => {
-        debugger
-        console.error(error)
-        pubsub.publish('show-message', { message: TEXT_ERROR_MESSAGE });
         pubsub.publish('end-updated-all-weather-card');
+        if( !response ) {
+          pubsub.publish('show-message', {message: errorMessages.unknow()});
+        }
+        else{
+          response.forEach(item => {
+            let id = item.id;
+            let weatherCard = this.setWeatherCard( item, id );
+            this.date = new Date;
+            pubsub.publish('update-card-weater', weatherCard );
+            storage.updateItem( id, weatherCard )
+          });
+        }
       });
     });
 
@@ -164,11 +192,23 @@ const store = {
     pubsub.subscribe('delete-card', ( data ) => {
       const id = data.id;
       if( typeof id !== 'number' ) return console.error('id must be a number');
-      storage.deleteItem( id );
+      storage.deleteItem( id )
+      .then( response => {
+        const card = response[0];
+        const index = this.weatherFor.indexOf( card.geonameid );
+        if( index < 0 ) console.error(`nonexistent name ${card}`);
+        else this.weatherFor.splice(index, 1);
+      });
+    });
+
+    pubsub.subscribe('init-app', ( list ) => {
+      this.weatherFor = list.map(item => item.geonameid);
     });
   }
 };
 
 store.init();
+const createId = () => Date.now();
+const getGeonameId = (str) => str.match(/geonameid:(\d{1,})\//)[1];
 
 module.exports = store;

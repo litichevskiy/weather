@@ -13,12 +13,12 @@ const serverApi = {
     });
   },
 
-  getSity( link ) {
+  getCity( link ) {
     if( !link ) return Promise.reject(`link can not be empty`);
     return fetch( link )
     .then( response => {
       if( response.ok ) return response.json();
-      else return Promise.reject( response );
+      else return Promise.reject(response);
     })
     .catch(error => {
       console.error(error);
@@ -26,15 +26,15 @@ const serverApi = {
     });
   },
 
-  getWeather( place ) {
-    if( !place ) return Promise.reject(`place can not be empty`);
+  getWeather( coord ) {
+    if( !coord ) return Promise.reject(`coord can not be empty`);
     const url = `https://query.yahooapis.com/v1/public/yql?q=`;
-    let YQL = `select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="${place}")`;
+    let YQL = `select * from weather.forecast where woeid in (select woeid from geo.places(1) where text="${coord}")`;
     YQL = encodeURIComponent( YQL ) + `&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys`;
     return fetch( url + YQL )
     .then( response => {
       if( response.ok ) return response.json();
-      else return Promise.reject( response );
+      else return Promise.reject(response);
     })
     .catch( error =>  {
       console.error(error);

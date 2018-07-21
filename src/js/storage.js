@@ -38,15 +38,16 @@ module.exports = {
   deleteItem( id ) {
     return this.getStorage()
     .then( storage => {
-      let index;
+      let index, card;
       storage.some( (item, i) => {
         if( item.id === id ) {
           index = i;
           return true;
         }
       });
-      storage.splice( index, 1 );
+      card = storage.splice( index, 1 );
       localforage.setItem( STORAGE_NAME, storage );
+      return card;
     })
     .catch(error => console.error( error ));
   },

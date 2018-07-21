@@ -3,4 +3,5 @@
 .tern-project
 Procfile
 *.map
-.server.js
+package-lock.json
+server.js

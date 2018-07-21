@@ -1,7 +1,7 @@
 const pubsub = new ( require('../utils/pubSub') );
 const ButtonImg = require('./ButtonImg');
 const ESC = 27; //key code
-const TIME_HIDE_MESSAGE = 5000; //ms
+const TIME_HIDE_MESSAGE = 10000; //ms
 
 class Message {
   constructor( data ) {
