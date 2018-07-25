@@ -100,21 +100,23 @@ function createForecast( list ) {
 function templateCard( data ) {
 
   const { location, item, atmosphere, wind, astronomy } = data;
-    const today = format.formateToday( data.lastBuildDate );
+    const date =  data.lastUpdate;
+    const timeFormat = store.settings.timeFormat;
     let forecast = item.forecast.slice(1,);
     let todayMinMax = item.forecast[0];
 
     const template =
       `<svg class="deleteCard" data-role="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642" width="14" >
+        <title id="Delete city">Delete city</title>
         <path data-role="delete" fill="#FFF" d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z"/>
       </svg>
       <div class="row">
         <div class="cell">
         <div class="cityName">${location.city} ${location.country}</div>
         <div class="containerDate">
-          <small class="content">${today}</small>
-          <small class="content">updated today in
-            <small data-time-update="time-update">${format.formateDate(store.date)}</small>
+          <small class="content">${format.formateToday(date)}</small>
+          <small class="content">updated in:
+            <small data-time-update="time-update">${format.getCurrentTime(date, timeFormat)}</small>
           </small>
         </div>
         <div class="blockTemperature">
@@ -156,15 +158,15 @@ function templateCard( data ) {
           <div class="content">
             <span class="title">wind</span>
             <span class="wind">${wind.speed}</span> km/h
-            <span class="windDirection">${format.degToCompass(+wind.direction)}</span>
+            <span class="windDirection">${format.getDirectionWind(+wind.direction)}</span>
           </div>
           <div class="content">
             <span class="title">sunrise</span>
-            <span class="sunrise">${astronomy.sunrise}</span>
+            <span class="sunrise">${format.setS(astronomy.sunrise, timeFormat, 'am')}</span>
           </div>
           <div class="content">
             <span class="title">sunset</span>
-            <span class="sunset">${astronomy.sunset}</span>
+            <span class="sunset">${format.setS(astronomy.sunset, timeFormat, 'pm')}</span>
           </div>
         </div>
         <div class="wrapperForecast">

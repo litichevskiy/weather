@@ -1,0 +1,123 @@
+.containerMenu{
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -400px;
+  width: 400px;
+  z-index: 1;
+  background-color: #343952;
+  transition: 0.3s left, right;
+
+  &.enabled{
+    left: 0;
+    /*box-shadow: 1px 0px 5px 0px #151515;*/
+    box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14);
+  }
+
+  .headerMenu{
+    @extend .flexCentered;
+    justify-content: space-between;
+    padding: 0 0.6em;
+    position: relative;
+    height: $header-height;
+    /*border-bottom: 1px solid #bdbbbb;*/
+    box-shadow: $default-box-shadow;
+    /*background-color: tomato;*/
+  }
+
+  .wrapperSettings{
+    position: absolute;
+    top: $header-height;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    overflow: auto;
+  }
+
+  .poweredby{
+    @extend .inlineFlexCentered;
+  }
+
+  .containerSettings{
+    color: white;
+  }
+
+  .title{
+    text-align: center;
+    font-size: 1.2em;
+  }
+
+  .wrapperButton{
+    text-align: center;
+    margin: 1em 0 1em 0;
+
+    .btnsave{
+      padding: 0.45em 1.3em;
+      cursor: pointer;
+      background-color: #d8d4d4;
+      border: none;
+      font-size: 0.9em;
+      border-radius: 4px;
+      box-shadow: 0px 0px 15px 0px #201e1e;
+      outline: none;
+      transition: 0.2s;
+
+      &:focus{
+        background-color: #b9b5b5;
+      }
+    }
+  }
+
+  .cancel{
+    @extend .defaultBtn;
+    @extend .inlineFlexCentered;
+    width: 30px;
+    height: 30px;
+    /*background-color: green;*/
+  }
+
+  .itemSettings{
+    background-color: rgba(255, 255, 255, 0.18);
+    margin: 0 auto 0.5em;
+    padding: 0.4em 0.4em 0.4em 1.7em;
+    width: 96%;
+    border-radius: 4px;
+    box-shadow: $default-box-shadow;
+
+    .titleItemSettings{
+      margin: 0 0 0.3em 0;
+      font-size: 1.1em;
+      /*text-align: center;*/
+    }
+
+    .select{
+      /*background-color: pink;*/
+      cursor: pointer;
+      width: 100%;
+      display: inline-block;
+      margin-bottom: 0.4em;
+      font-size: 1.1em;
+
+      input{
+        display: none;
+      }
+
+      .selectItem{
+        width: 100%;
+        display: inline-block;
+        position: relative;
+      }
+
+      input:checked ~ .selectItem:before{
+        content: '✓';
+        position: absolute;
+        left: -1em;
+        top: 0;
+      }
+
+      input:checked ~ .selectItem{
+        /*background-color: #343952;*/
+      }
+    }
+  }
+}

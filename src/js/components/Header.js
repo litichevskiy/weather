@@ -11,6 +11,14 @@ class Header {
     pubsub.subscribe('end-updated-all-weather-card', this.cancelUpdated);
     pubsub.subscribe('start-updated-all-weather-card', this.startUpdated);
 
+    new ButtonImg({
+      parent: this.container.querySelector('.btnMenu'),
+      name: 'settings',
+      className: 'settings',
+      title: 'Settings',
+      handlerClick: this.openSettings,
+    });
+
     this.btnUpdate = new ButtonImg({
       parent: wrapper,
       className: 'updateCard',
@@ -42,6 +50,10 @@ class Header {
 
   startUpdated() {
     this.btnUpdate.btn.classList.add('activeUpdate');
+  }
+
+  openSettings() {
+    pubsub.publish('clicked-open-settings')
   }
 };
 

@@ -5,15 +5,23 @@ const errorMessages = {
   unknow() { return `Oops! \n Something went wrong. \n Please try again`},
   unknowCiti(siti) { return `Weather for "${siti}" is not available`},
   weatherAdded(siti) {return `Weather for "${siti}" already exists`},
+  offline() {return `Connection state: \n offline`},
 };
 
+// const q = {
+//   temperature:{title:'Temperature',list:['Fahrenheit scale: °F', 'Celsius scale: °C']},
+//   speed: {title:'Wind speed',list:['Km/h','M/h']},
+//   timeFormat: {title:'Time format',list:['24-hour', '12-hour']},
+// };
+
 const store = {
+  settings: {temperature: 'c', speed: 'km', timeFormat:'24'},
   isShowBlockSearch: false,
   listSities: [],
-  date: new Date,
   memoryCities: {},
   weatherFor: [],
   notFound: false,
+  onlineStatus: navigator.onLine || window.navigator.onLine,
 
   async addNewCiti( link, name, geonameid ) {
     let city, weather;
@@ -42,6 +50,7 @@ const store = {
     try{
       weatherList = await storage.getStorage();
       if( !weatherList ) throw new Error();
+      weatherList = weatherList.listWeather;
       for( let item of weatherList ) {
         coord = item.coord;
         response = await this.getWeather(`(${coord.lat}, ${coord.long})`);
@@ -61,13 +70,14 @@ const store = {
   },
 
   setWeatherCard( response, num ) {
-    const {astronomy,atmosphere,location,units,wind,item,lastBuildDate,_name,geonameid} = response;
+    const {astronomy,atmosphere,location,units,wind,item,_name,geonameid} = response;
     const condition = item.condition;
     const id = num || createId();
+    const lastUpdate = new Date;
     const forecast = item.forecast.splice( 0, 6 );
     const coord = { lat: item.lat, long: item.long }
     return {
-      coord,astronomy,atmosphere,location,units,wind,item:{condition,forecast},lastBuildDate,id,geonameid,_name
+      coord,astronomy,atmosphere,location,units,wind,item:{condition,forecast},lastUpdate,id,geonameid,_name
     };
   },
 
@@ -86,9 +96,18 @@ const store = {
   },
 
   init() {
+    window.addEventListener('online', () => {
+      this.onlineStatus = true;
+    });
+    window.addEventListener('offline', () => {
+      this.onlineStatus = false;
+      pubsub.publish('show-message', {message: errorMessages.offline()});
+    });
+
     pubsub.subscribe('clicked-close-block-search', () => {
       this.isShowBlockSearch = !this.isShowBlockSearch;
       pubsub.publish('hide-block-search');
+      pubsub.publish('disabled-cityes-not-found');
       pubsub.publish('create-list-cityes', []);
       this.memoryCities = {};
     });
@@ -99,6 +118,8 @@ const store = {
     });
 
     pubsub.subscribe('new-substring-on-search-cityes', ( data ) => {
+      if( !this.onlineStatus ) return;
+
       pubsub.publish('disabled-cityes-not-found');
       this.notFound = false;
       let substring = data.key;
@@ -155,7 +176,7 @@ const store = {
           pubsub.publish('show-message',{message:errorMessages.unknowCiti(response._name)});
         }
         else{
-          this.date = new Date;
+          console.log( response )
           this.weatherFor.push( geoId );
           let weatherCard = this.setWeatherCard( response );
           pubsub.publish('create-card-weater', weatherCard );
@@ -165,6 +186,7 @@ const store = {
     });
 
     pubsub.subscribe('update-all-weather-card', () => {
+      if( !this.onlineStatus ) return;
       pubsub.publish('start-updated-all-weather-card');
       this.updateWeatherCities()
       .then( response => {
@@ -176,7 +198,6 @@ const store = {
           response.forEach(item => {
             let id = item.id;
             let weatherCard = this.setWeatherCard( item, id );
-            this.date = new Date;
             pubsub.publish('update-card-weater', weatherCard );
             storage.updateItem( id, weatherCard )
           });
@@ -203,6 +224,18 @@ const store = {
 
     pubsub.subscribe('init-app', ( list ) => {
       this.weatherFor = list.map(item => item.geonameid);
+    });
+
+    pubsub.subscribe('clicked-open-settings', () => {
+      pubsub.publish('open-settings');
+    });
+
+    pubsub.subscribe('new-settings', ( data ) => {
+      storage.setSettings( data )
+      .then( response => {
+        console.log('settings ', data);
+        this.settings = data;
+      })
     });
   }
 };

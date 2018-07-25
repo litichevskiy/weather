@@ -23,11 +23,20 @@ module.exports = {
   },
   plugins: [
     // new SWPrecacheWebpackPlugin({
-    //   importScripts: ['/sw.js'],
+    //   importScripts: [''],
     //   staticFileGlobs:[
     //     '/',
+    //     'index.html',
     //     'dist/js/bundle.js',
     //     'dist/css/bundle.css',
+    //     'images/weather/clear.png',
+    //     'images/weather/cloudy.png',
+    //     'images/weather/fog.png',
+    //     'images/weather/partly-cloudy.png',
+    //     'images/weather/rain.png',
+    //     'images/weather/snow.png',
+    //     'images/weather/thunderstorm.png',
+    //     'images/weather/wind.png',
     //   ],
     //   stripPrefix: '/dist/',
     //   cacheId: 'my-project-name',
