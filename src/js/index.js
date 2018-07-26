@@ -71,5 +71,7 @@ if ('serviceWorker' in navigator) {
       response.update();
       console.log('Service Worker Registered');
     })
-    .catch(error => console.error(error) )
+    .catch(error => {
+      console.error(error)
+    })
 }
