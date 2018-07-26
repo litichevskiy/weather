@@ -1,6 +1,7 @@
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const MONTH = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DIRECTION_WIND = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
+const MILE = 0.621371; // 1 mile in km
 
 const format = {
   getCurrentTime( date, format ) {
@@ -19,7 +20,7 @@ const format = {
     }
   },
 
-  setS( str, format, prefix ) {
+  getTimeSunriseSunset( str, format, prefix ) {
     let minutes;
     let hours;
     minutes = str.match(/:(\d{1,2})/)[1];
@@ -37,29 +38,14 @@ const format = {
     }
   },
 
-  // setSunset( str, format ) {
-  //   let minutes;
-  //   let hours;
-  //   minutes = str.match(/:(\d{1,2})/)[1];
-  //   minutes = isAddZero( +minutes );
-
-  //   if( format === '12' ) {
-  //     hours = match(/(\d{1,2}):/)[1];
-  //     return `${hours}:${minutes}`;
-  //   }
-  //   else{
-  //     // minutes = str.match(/:(\d{1,2})/)[1];
-  //     hours = match(/(\d{1,2}):/)[1];
-  //     hours = isAddZero( +hours );
-  //   }
-  // },
-
-  fahrenheitToCelsius( deg ) {
-    return (( deg - 32 ) / 1.8).toFixed( 0 );
+  fahrenheitToCelsius( deg, prefix ) {
+    if( prefix === 'c' ) return (( deg - 32 ) / 1.8).toFixed( 0 ) + ' °C';
+    else return deg + ' °F'
   },
 
-  celsiusToFahrenheit( deg ) {
-    return Math.ceil( ( deg * 1.8 ) + 32 );
+  getWindStrength( windSpeed, prefix, inHours ) {
+    if( prefix === 'km' ) return `${windSpeed} km${inHours}`;
+    else return `${(+windSpeed * MILE).toFixed(1)} m${inHours}`;
   },
 
   getDirectionWind( num ) {

@@ -2,50 +2,24 @@ const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const autoprefixer = require('autoprefixer');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
-const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const NODE_ENV = process.env.NODE_ENV || "development";
 const IS_PRODUCTION = NODE_ENV === "production";
-
-// const PUBLIC_PATH = '/dist/';
 
 module.exports = {
   entry: ['babel-polyfill', './src/js/index.js', './src/style/index.scss'],
   output: {
     path: path.resolve(__dirname, './dist/js'),
     filename: 'bundle.js',
-    // filename: '[name]-[hash].js',
-    // publicPath: PUBLIC_PATH,
   },
   resolve: {
       extensions: ['.scss', '.js', ' '],
   },
   plugins: [
-    // new SWPrecacheWebpackPlugin({
-    //   importScripts: [''],
-    //   staticFileGlobs:[
-    //     '/',
-    //     'index.html',
-    //     'dist/js/bundle.js',
-    //     'dist/css/bundle.css',
-    //     'images/weather/clear.png',
-    //     'images/weather/cloudy.png',
-    //     'images/weather/fog.png',
-    //     'images/weather/partly-cloudy.png',
-    //     'images/weather/rain.png',
-    //     'images/weather/snow.png',
-    //     'images/weather/thunderstorm.png',
-    //     'images/weather/wind.png',
-    //   ],
-    //   stripPrefix: '/dist/',
-    //   cacheId: 'my-project-name',
-    //   dontCacheBustUrlsMatching: /\.\w{8}\./,
-    //   filename: 'service-worker.js',
-    //   minify: IS_PRODUCTION,
-    //   staticFileGlobsIgnorePatterns: [/\.map$/],
-    // }),
     new ExtractTextPlugin('../css/bundle.css'),
+    new webpack.DefinePlugin ({
+      'process.env.NODE_ENV': JSON.stringify ( NODE_ENV )
+    })
   ],
   devtool: 'source-map',
   watch: !IS_PRODUCTION,
@@ -61,13 +35,6 @@ module.exports = {
             }
         }
       },
-      // {
-      //   test: /\.(png|jp(e*)g|svg)$/,
-      //   exclude: /\/node_modules\//,
-      //   use: [{
-      //       loader: 'url-loader',
-      //   }]
-      // },
       {
         test: /\.(woff(2)?|ttf|eot|svg)$/,
         use: [{
@@ -121,12 +88,3 @@ if( IS_PRODUCTION ) {
         })
     )
 }
-
-  // "babel-core": "^6.26.0",
-  // "babel-loader": "^7.1.2",
-  // "babel-plugin-transform-runtime": "^6.23.0",
-  // "babel-polyfill": "^6.26.0",
-  // "babel-preset-env": "^1.6.0",
-  // "babel-preset-es2015": "^6.24.1",
-  // "babel-preset-stage-0": "^6.24.1",
-  // "babel-regenerator-runtime": "^6.5.0"

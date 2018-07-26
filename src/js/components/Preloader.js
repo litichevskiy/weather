@@ -1,5 +1,3 @@
-const pubsub = new ( require('../utils/pubSub') );
-
 class Preloader {
   constructor( data ) {
     this.preloader = this.createLoader();
@@ -12,6 +10,10 @@ class Preloader {
 
   enabled() {
     this.preloader.hidden = false;
+  }
+
+  deletePreloader() {
+    this.preloader = null;
   }
 
   createLoader() {

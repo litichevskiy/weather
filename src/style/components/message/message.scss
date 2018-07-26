@@ -5,14 +5,12 @@
   width: 250px;
   padding: 1.65em 0.7em 0.7em 0.7em;
   z-index: 3;
-  /*background-color: white;*/
   background-color: cornsilk;
   border-radius: 4px;
   color: #403939;
   box-shadow: 0px 0px 7px 1px #4a4747;
   transition: 0.2s;
   display: none;
-  /*top: 0.3em;*/
 
   &.active{
     display: inline-block;

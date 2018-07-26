@@ -8,12 +8,6 @@ const errorMessages = {
   offline() {return `Connection state: \n offline`},
 };
 
-// const q = {
-//   temperature:{title:'Temperature',list:['Fahrenheit scale: °F', 'Celsius scale: °C']},
-//   speed: {title:'Wind speed',list:['Km/h','M/h']},
-//   timeFormat: {title:'Time format',list:['24-hour', '12-hour']},
-// };
-
 const store = {
   settings: {temperature: 'c', speed: 'km', timeFormat:'24'},
   isShowBlockSearch: false,
@@ -36,7 +30,7 @@ const store = {
       weather.geonameid = geonameid;
     } catch( error ) {
       debugger
-      console.log( error );
+      console.error( error );
     }
     return weather;
   },
@@ -70,14 +64,25 @@ const store = {
   },
 
   setWeatherCard( response, num ) {
-    const {astronomy,atmosphere,location,units,wind,item,_name,geonameid} = response;
+    const {
+      astronomy,
+      atmosphere,
+      location,
+      units,
+      wind,
+      item,
+      _name,
+      geonameid
+    } = response;
     const condition = item.condition;
     const id = num || createId();
     const lastUpdate = new Date;
     const forecast = item.forecast.splice( 0, 6 );
     const coord = { lat: item.lat, long: item.long }
     return {
-      coord,astronomy,atmosphere,location,units,wind,item:{condition,forecast},lastUpdate,id,geonameid,_name
+      coord, astronomy, atmosphere,
+      location, units ,wind, item:{ condition, forecast },
+      lastUpdate, id, geonameid, _name
     };
   },
 
@@ -90,7 +95,7 @@ const store = {
       if( response.count > 0 ) this.memoryCities[substring] = list;
     } catch( error ) {
       debugger
-      console.log( error );
+      console.error( error );
     }
     return list;
   },
@@ -176,11 +181,17 @@ const store = {
           pubsub.publish('show-message',{message:errorMessages.unknowCiti(response._name)});
         }
         else{
-          console.log( response )
-          this.weatherFor.push( geoId );
           let weatherCard = this.setWeatherCard( response );
-          pubsub.publish('create-card-weater', weatherCard );
-          storage.setItem( weatherCard );
+          storage.setItem( weatherCard )
+          .then( response => {
+            if( !response ) {
+              pubsub.publish('show-message', { message: errorMessages.unknow() });
+            }
+            else{
+              this.weatherFor.push( geoId );
+              pubsub.publish('create-card-weater', weatherCard );
+            }
+          });
         }
       });
     });
@@ -198,8 +209,15 @@ const store = {
           response.forEach(item => {
             let id = item.id;
             let weatherCard = this.setWeatherCard( item, id );
-            pubsub.publish('update-card-weater', weatherCard );
             storage.updateItem( id, weatherCard )
+            .then( response => {
+              if( !response ) {
+                pubsub.publish('show-message', {message: errorMessages.unknow()});
+              }
+              else{
+                pubsub.publish('update-card-weater', weatherCard );
+              }
+            })
           });
         }
       });
@@ -215,10 +233,15 @@ const store = {
       if( typeof id !== 'number' ) return console.error('id must be a number');
       storage.deleteItem( id )
       .then( response => {
-        const card = response[0];
-        const index = this.weatherFor.indexOf( card.geonameid );
-        if( index < 0 ) console.error(`nonexistent name ${card}`);
-        else this.weatherFor.splice(index, 1);
+        if( !response ) {
+          pubsub.publish('show-message', { message: errorMessages.unknow() });
+        }
+        else{
+          const card = response[0];
+          const index = this.weatherFor.indexOf( card.geonameid );
+          if( index < 0 ) console.error(`nonexistent name ${card}`);
+          else this.weatherFor.splice(index, 1);
+        }
       });
     });
 
@@ -233,9 +256,14 @@ const store = {
     pubsub.subscribe('new-settings', ( data ) => {
       storage.setSettings( data )
       .then( response => {
-        console.log('settings ', data);
-        this.settings = data;
-      })
+
+        for( let key in response.settings ) {
+          if( this.settings[key] !== response.settings[key] ) {
+            this.settings[key] = response.settings[key];
+            pubsub.publish(`update-units-${key}`, response.listWeather );
+          }
+        }
+      });
     });
   }
 };

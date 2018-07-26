@@ -4,25 +4,22 @@
   bottom: 0;
   left: -400px;
   width: 400px;
-  z-index: 1;
-  background-color: #343952;
+  z-index: 2;
+  background-color: #26272b;
   transition: 0.3s left, right;
 
   &.enabled{
     left: 0;
-    /*box-shadow: 1px 0px 5px 0px #151515;*/
     box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14);
   }
 
   .headerMenu{
     @extend .flexCentered;
     justify-content: space-between;
-    padding: 0 0.6em;
+    padding: 0 0.9em 0 0.6em;
     position: relative;
     height: $header-height;
-    /*border-bottom: 1px solid #bdbbbb;*/
     box-shadow: $default-box-shadow;
-    /*background-color: tomato;*/
   }
 
   .wrapperSettings{
@@ -73,7 +70,6 @@
     @extend .inlineFlexCentered;
     width: 30px;
     height: 30px;
-    /*background-color: green;*/
   }
 
   .itemSettings{
@@ -87,11 +83,9 @@
     .titleItemSettings{
       margin: 0 0 0.3em 0;
       font-size: 1.1em;
-      /*text-align: center;*/
     }
 
     .select{
-      /*background-color: pink;*/
       cursor: pointer;
       width: 100%;
       display: inline-block;
@@ -113,10 +107,6 @@
         position: absolute;
         left: -1em;
         top: 0;
-      }
-
-      input:checked ~ .selectItem{
-        /*background-color: #343952;*/
       }
     }
   }

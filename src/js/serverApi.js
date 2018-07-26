@@ -1,5 +1,4 @@
 const serverApi = {
-
   getCitiesBySubstring( substring ) {
     if( !substring ) return Promise.reject(`substring can not be empty`);
     return fetch( `https://api.teleport.org/api/cities/?search=${substring}`)

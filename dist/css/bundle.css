@@ -44,9 +44,6 @@
 
 .defaultBtn, .header .updateCard,
 .header .addCard, .header .settings, .blockSearch .wrapper .btnBack, .containerInput .buttonClear, .containerCardWeater .deleteCard, .containerMessage .deleteMessage, .containerMenu .cancel {
-  /*outline: none;*/
-  /*border: none;*/
-  /*background-repeat: no-repeat;*/
   -webkit-user-select: none;
      -moz-user-select: none;
       -ms-user-select: none;
@@ -97,10 +94,19 @@ button::-moz-focus-inner {
   height: 100vh;
   font-family: 'Maitree', 'sans-serif';
   overflow: hidden; }
-
-@media screen and (max-device-width: 480px) {
-  .app {
-    /*background-color: tomato;*/ } }
+  .app .preloaderApp {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    z-index: 0;
+    opacity: 0.2;
+    padding-top: 3em; }
+    .app .preloaderApp .circle {
+      width: 70px;
+      height: 70px; }
 
 .header {
   position: relative;
@@ -126,24 +132,16 @@ button::-moz-focus-inner {
     -webkit-box-align: center;
         -ms-flex-align: center;
             align-items: center; }
-  .header .addCard {
-    /*background-image: url('/images/svg/plus.svg');*/ }
   .header .updateCard {
-    /*background-image: url('/images/svg/refresh.svg');*/
     -webkit-transition: 1s;
     -o-transition: 1s;
-    transition: 1s;
-    /*transform: scale(1.2);*/ }
+    transition: 1s; }
     .header .updateCard.activeUpdate {
       -webkit-animation: circle 1s infinite linear;
               animation: circle 1s infinite linear; }
   .header .updateCard,
   .header .addCard {
-    margin-left: 9px;
-    /*width: 25px;*/
-    /*height: 25px;*/
-    /*background-color: tomato;*/
-    /*background-color: transparent;*/ }
+    margin-left: 9px; }
   .header .settings {
     margin-right: 13px; }
 
@@ -174,13 +172,6 @@ button::-moz-focus-inner {
     right: 0.6em;
     top: 0;
     height: 100%; }
-    .blockSearch .wrapper .btnBack {
-      /*width: 25px;*/
-      /*height: 25px;*/
-      /*background-color: tomato;*/
-      /*background-color: transparent;*/
-      /*background-position: center center;*/
-      /*background-image: url('/images/svg/back.svg');*/ }
   .blockSearch .containerListSities {
     text-align: center;
     padding: 0.3em;
@@ -205,14 +196,10 @@ button::-moz-focus-inner {
     .containerInput .inputSearch:focus {
       border-color: gold; }
   .containerInput .buttonClear {
-    /*background-color: transparent;*/
-    /*background-image: url('/images/svg/cancel.svg');*/
-    /*background-position: center;*/
     width: 35px;
     height: 85%;
     position: absolute;
     right: 2px;
-    /*padding: 0 15px;*/
     top: 7.5%; }
 
 .containerCardWeater {
@@ -225,6 +212,9 @@ button::-moz-focus-inner {
   background-color: #343952; }
   .containerCardWeater .preloader {
     padding: 1.5em; }
+  .containerCardWeater .listCardWeater {
+    position: relative;
+    z-index: 1; }
   .containerCardWeater .itemCardWeather {
     padding: 0.5em;
     margin: 0.7em 0.7em 1.4em 0.7em;
@@ -235,19 +225,12 @@ button::-moz-focus-inner {
     -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
   .containerCardWeater .deleteCard {
-    /*background-color: white;*/
-    /*width: 26px;*/
-    /*height: 26px;*/
-    /*background-image: url('/images/svg/cancel.svg');*/
-    /*background-position: center, center;*/
     border-radius: 5px;
     position: absolute;
     top: 0.35em;
     padding: 5px;
     right: 0.35em;
-    /*border: 1px solid white;*/
     border-radius: 4px;
-    /*box-shadow: 0 2px 2px 0 rgba(0,0,0,.14), 0 3px 1px -2px rgba(0,0,0,.2), 0 1px 5px 0 rgba(0,0,0,.12);*/
     -webkit-box-shadow: 0px 0px 4px 0px #2b2b2b;
             box-shadow: 0px 0px 4px 0px #2b2b2b; }
   .containerCardWeater .cityName {
@@ -257,7 +240,11 @@ button::-moz-focus-inner {
     overflow: hidden;
     -o-text-overflow: ellipsis;
        text-overflow: ellipsis;
-    padding-right: 30px; }
+    padding-right: 30px;
+    line-height: 1.3; }
+  .containerCardWeater .regionName {
+    margin-bottom: 0.5em;
+    line-height: 1.3; }
   .containerCardWeater .containerDate .content {
     display: block;
     line-height: 1.4; }
@@ -279,16 +266,13 @@ button::-moz-focus-inner {
     display: flex; }
     .containerCardWeater .containerMinMaxToday .wrapper {
       margin: 0.1em 0.4em 0 0.1em; }
-  .containerCardWeater .condition {
-    /*text-align: center;*/ }
   .containerCardWeater .imgToday {
     width: 85px;
     -webkit-transform: scale(1.33);
         -ms-transform: scale(1.33);
             transform: scale(1.33); }
   .containerCardWeater .descriptionAtmosphere .content {
-    margin-top: 0.3em;
-    padding: 0.1em 0;
+    padding: 0.22em 0;
     font-size: 1.1em;
     border-bottom: 1px dotted #bdbbbb; }
   .containerCardWeater .descriptionAtmosphere .title {
@@ -307,16 +291,8 @@ button::-moz-focus-inner {
   .containerCardWeater .cell:nth-child(1),
   .containerCardWeater .cell:nth-child(2) {
     margin-right: 3%;
-    /*margin-right: 2em;*/
-    /*background-color: #FFF;*/
     width: 350px; }
-  .containerCardWeater .cell:nth-child(2) {
-    /*margin-right: 3%;*/
-    /*margin-right: 2em;*/
-    /*background-color: #FFF;*/
-    /*width: 350px;*/ }
   .containerCardWeater .wrapperForecast {
-    /*background-color: lightgrey;*/
     min-width: 40%; }
   .containerCardWeater .blockForecast {
     -webkit-box-orient: vertical;
@@ -327,13 +303,9 @@ button::-moz-focus-inner {
     margin: 0.5em 0;
     font-size: 1.1em;
     text-align: center; }
-  .containerCardWeater .listForecast {
-    /*display: flex;*/
-    /*justify-content: space-between;*/
-    /*display: inline-block;*/
-    /*float: right;*/ }
   .containerCardWeater .itemForecast {
-    margin-bottom: 5px;
+    margin: 0.2em 0;
+    padding: 0.3em 0;
     font-size: 0.9em;
     border-bottom: 1px dotted #bdbbbb;
     -webkit-box-pack: justify;
@@ -399,7 +371,6 @@ button::-moz-focus-inner {
   width: 250px;
   padding: 1.65em 0.7em 0.7em 0.7em;
   z-index: 3;
-  /*background-color: white;*/
   background-color: cornsilk;
   border-radius: 4px;
   color: #403939;
@@ -408,8 +379,7 @@ button::-moz-focus-inner {
   -webkit-transition: 0.2s;
   -o-transition: 0.2s;
   transition: 0.2s;
-  display: none;
-  /*top: 0.3em;*/ }
+  display: none; }
   .containerMessage.active {
     display: inline-block;
     top: 0.3em; }
@@ -437,27 +407,24 @@ button::-moz-focus-inner {
   bottom: 0;
   left: -400px;
   width: 400px;
-  z-index: 1;
-  background-color: #343952;
+  z-index: 2;
+  background-color: #26272b;
   -webkit-transition: 0.3s left, right;
   -o-transition: 0.3s left, right;
   transition: 0.3s left, right; }
   .containerMenu.enabled {
     left: 0;
-    /*box-shadow: 1px 0px 5px 0px #151515;*/
     -webkit-box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14);
             box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14); }
   .containerMenu .headerMenu {
     -webkit-box-pack: justify;
         -ms-flex-pack: justify;
             justify-content: space-between;
-    padding: 0 0.6em;
+    padding: 0 0.9em 0 0.6em;
     position: relative;
     height: 60px;
-    /*border-bottom: 1px solid #bdbbbb;*/
     -webkit-box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12);
-    /*background-color: tomato;*/ }
+            box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
   .containerMenu .wrapperSettings {
     position: absolute;
     top: 60px;
@@ -490,8 +457,7 @@ button::-moz-focus-inner {
         background-color: #b9b5b5; }
   .containerMenu .cancel {
     width: 30px;
-    height: 30px;
-    /*background-color: green;*/ }
+    height: 30px; }
   .containerMenu .itemSettings {
     background-color: rgba(255, 255, 255, 0.18);
     margin: 0 auto 0.5em;
@@ -502,10 +468,8 @@ button::-moz-focus-inner {
             box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 0 3px 1px -2px rgba(0, 0, 0, 0.2), 0 1px 5px 0 rgba(0, 0, 0, 0.12); }
     .containerMenu .itemSettings .titleItemSettings {
       margin: 0 0 0.3em 0;
-      font-size: 1.1em;
-      /*text-align: center;*/ }
+      font-size: 1.1em; }
     .containerMenu .itemSettings .select {
-      /*background-color: pink;*/
       cursor: pointer;
       width: 100%;
       display: inline-block;
@@ -522,8 +486,6 @@ button::-moz-focus-inner {
         position: absolute;
         left: -1em;
         top: 0; }
-      .containerMenu .itemSettings .select input:checked ~ .selectItem {
-        /*background-color: #343952;*/ }
 
 /*style for small devices*/
 @media (max-width: 650px) {
@@ -572,11 +534,11 @@ button::-moz-focus-inner {
   .containerCardWeater .cell:nth-child(2) {
     width: 280px; }
   .containerCardWeater .itemCardWeather {
-    padding: 0; } }
+    padding: 0.4em 0 0 0; } }
 
 @media (max-width: 650px) {
   .containerCardWeater .itemCardWeather {
-    padding: 0 0.2em; }
+    padding: 0.4em 0.2em 0 0.2em; }
   .containerCardWeater .cell:nth-child(1),
   .containerCardWeater .cell:nth-child(2) {
     margin: 0 0 0.7em 0;
@@ -606,31 +568,28 @@ button::-moz-focus-inner {
     -webkit-box-direction: normal;
         -ms-flex-direction: column;
             flex-direction: column; }
-  .containerCardWeater .itemForecast {
-    -ms-flex-pack: distribute;
-        justify-content: space-around; }
-    .containerCardWeater .itemForecast .cellForecast .dayForecast {
-      margin-left: 0; }
-    .containerCardWeater .itemForecast .cellForecast:nth-child(1) {
-      -ms-flex-wrap: wrap;
-          flex-wrap: wrap;
-      width: 50%;
-      -webkit-box-pack: start;
-          -ms-flex-pack: start;
-              justify-content: flex-start; }
-    .containerCardWeater .itemForecast .dayForecast,
-    .containerCardWeater .itemForecast .dateForecast {
-      margin-right: 0; }
-    .containerCardWeater .itemForecast .descriptionForecast {
-      width: 100%;
-      margin-left: 0; } }
+  .containerCardWeater .itemForecast .cellForecast .dayForecast {
+    margin-left: 0; }
+  .containerCardWeater .itemForecast .cellForecast:nth-child(1) {
+    -ms-flex-wrap: wrap;
+        flex-wrap: wrap;
+    width: 50%;
+    -webkit-box-pack: start;
+        -ms-flex-pack: start;
+            justify-content: flex-start; }
+  .containerCardWeater .itemForecast .dayForecast,
+  .containerCardWeater .itemForecast .dateForecast {
+    margin-right: 0; }
+  .containerCardWeater .itemForecast .descriptionForecast {
+    width: 100%;
+    margin-left: 0; } }
 
 @media (max-width: 470px) {
-  .containerCardWeater .cityName {
-    font-size: 1.35em; }
+  .containerCardWeater .descriptionAtmosphere .title {
+    width: 130px;
+    font-size: 1em; }
   .containerCardWeater .itemCardWeather {
-    margin: 0.7em 0.25em 1.4em 0.25em;
-    padding: 0 0.2em; }
+    margin: 0.7em 0.25em 1.4em 0.25em; }
   .containerCardWeater .imgForecast {
     width: 40px;
     margin: 0 0 0 0.5em; }
@@ -639,7 +598,6 @@ button::-moz-focus-inner {
     -webkit-box-direction: normal;
         -ms-flex-direction: row;
             flex-direction: row;
-    margin-bottom: 0.6em;
     -webkit-box-pack: justify;
         -ms-flex-pack: justify;
             justify-content: space-between; }

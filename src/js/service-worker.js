@@ -1,7 +1,7 @@
-const CACHE_NAME = ['version-1'];
+const CACHE_NAME = ['v-11'];
 const FILES_TO_CACHE = [
   '/',
-  'index.html',
+  '/index.html',
   'manifest.json',
   'dist/js/bundle.js',
   'dist/css/bundle.css',

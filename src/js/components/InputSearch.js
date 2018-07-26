@@ -13,7 +13,6 @@ class InputSearch {
       name: 'cancel',
       handlerClick: this.clearInput,
     });
-
     this.input.addEventListener('input', data.inputHandler);
   }
 

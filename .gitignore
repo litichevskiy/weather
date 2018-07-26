@@ -4,4 +4,3 @@
 Procfile
 *.map
 package-lock.json
-server.js
