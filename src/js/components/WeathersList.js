@@ -139,7 +139,7 @@ function createForecast( list, tempFormat ) {
           <span class="descriptionForecast">${item.text}</span>
         </div>
         <div class="cellForecast">
-          <img class="imgForecast" src="images/weather/${CODES[item.code]}.png" alt=""/>
+          <img class="imgForecast" src="./src/images/weather/${CODES[item.code]}.png" alt=""/>
           <div class="containerMinMax">
             <div class="maxTemperature">
               <span class="minIcon">&#8595;</span>
@@ -191,7 +191,7 @@ function templateCard( data ) {
             </div>
           </div>
           <div class="condition">
-            <img class="imgToday" src="images/weather/${CODES[item.condition.code]}.png" alt="" />
+            <img class="imgToday" src="./src/images/weather/${CODES[item.condition.code]}.png" alt="" />
             <div>${item.condition.text}</div>
           </div>
         </div>
