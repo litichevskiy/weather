@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const SWPrecacheWebpackPlugin = require('sw-precache-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const NODE_ENV = process.env.NODE_ENV || "development";
 const IS_PRODUCTION = NODE_ENV === "production";
@@ -19,7 +20,33 @@ module.exports = {
     new ExtractTextPlugin('../css/bundle.css'),
     new webpack.DefinePlugin ({
       'process.env.NODE_ENV': JSON.stringify ( NODE_ENV )
-    })
+    }),
+    new SWPrecacheWebpackPlugin({
+    cacheId: 'weather',
+    filename: '../js/service-worker.js',
+    staticFileGlobs: [
+      '/',
+      '/index.html',
+      '/manifest.json',
+      '/dist/js/bundle.js',
+      '/dist/css/bundle.css',
+      '/images/weather/clear.png',
+      '/images/weather/cloudy.png',
+      '/images/weather/fog.png',
+      '/images/weather/partly-cloudy.png',
+      '/images/weather/rain.png',
+      '/images/weather/snow.png',
+      '/images/weather/thunderstorm.png',
+      '/images/weather/wind.png',
+      '/images/poweredby.png',
+      '/dist/fonts/MjQGmil5tffhpBrknsqsfamD.woff2',
+      '/dist/fonts/MjQGmil5tffhpBrkntGsfamD.woff2',
+      '/dist/fonts/MjQGmil5tffhpBrknt6sfQ.woff2',
+    ],
+    // stripPrefix: 'src/static/',
+    mergeStaticsConfig: true,
+    staticFileGlobsIgnorePatterns: [/\.map$/],
+  }),
   ],
   devtool: 'source-map',
   watch: !IS_PRODUCTION,
