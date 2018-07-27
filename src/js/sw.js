@@ -1,4 +1,4 @@
-const CACHE_NAME = ['v-11'];
+const CACHE_NAME = ['v-1d_r4hbv1'];
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
@@ -20,7 +20,7 @@ const FILES_TO_CACHE = [
 ];
 
 const updateCache = () => {
-  console.log('sw updateCache');
+  console.log('sw: UPDATECACHE');
   caches.keys().then(function(keyList) {
       return Promise.all(keyList.map(function(key) {
         if (CACHE_NAME.indexOf(key) === -1) {
@@ -30,8 +30,8 @@ const updateCache = () => {
     })
 }
 
-this.addEventListener('install', ( event ) => {
-  console.log('sw install');
+self.addEventListener('install', ( event ) => {
+  console.log('sw: INSTALL');
   event.waitUntil(
     caches.open( CACHE_NAME )
     .then(function(cache) {
@@ -40,8 +40,8 @@ this.addEventListener('install', ( event ) => {
   );
 });
 
-this.addEventListener('fetch', ( event ) => {
-  console.log('sw install fetch');
+self.addEventListener('fetch', ( event ) => {
+  console.log('sw: FETCH');
   event.respondWith(
     caches.match(event.request)
     .then(function(response) {

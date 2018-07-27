@@ -1,7 +1,7 @@
 const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
 const MONTH = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DIRECTION_WIND = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
-const MILE = 0.621371; // 1 mile in km
+const MILE = 0.621371; // 1 km in miles
 
 const format = {
   getCurrentTime( date, format ) {
@@ -13,7 +13,7 @@ const format = {
       return `${hours}:${minutes}`;
     }
     else{
-      let amPm = ( hours > 12 ) ? 'pm' : 'am';
+      let amPm = ( hours > 11 ) ? 'PM' : 'AM';
       if( hours > 12 ) hours -= 12;
       else if( hours === 0 ) hours = '12';
       return `${hours}:${minutes} ${amPm}`;

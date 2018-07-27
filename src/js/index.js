@@ -27,10 +27,6 @@ new Menu({
 // let preloader = new Preloader({ parent: document.querySelector('.preloaderApp')});
 // preloader.enabled();
 
-//////////////////////////
-// add check storage.init
-//////////////////////////
-//////////////////////////
 storage.init( store.settings )
 .then( response => {
   if( !response ) return alert("your browser is not supported");
@@ -65,8 +61,10 @@ storage.init( store.settings )
   })
 });
 
+
+
 if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./service-worker.js')
+    navigator.serviceWorker.register('./sw.js')
     .then( response => {
       response.update();
       console.log('Service Worker Registered');

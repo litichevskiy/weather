@@ -10042,10 +10042,6 @@ new Menu({
 // let preloader = new Preloader({ parent: document.querySelector('.preloaderApp')});
 // preloader.enabled();
 
-//////////////////////////
-// add check storage.init
-//////////////////////////
-//////////////////////////
 storage.init(store.settings).then(function (response) {
   if (!response) return alert("your browser is not supported");
   store.settings = response.settings;
@@ -10085,7 +10081,7 @@ storage.init(store.settings).then(function (response) {
 });
 
 if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./service-worker.js').then(function (response) {
+  navigator.serviceWorker.register('./sw.js').then(function (response) {
     response.update();
     console.log('Service Worker Registered');
   }).catch(function (error) {
@@ -13106,7 +13102,7 @@ module.exports = getParentNode;
 var DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
 var MONTH = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 var DIRECTION_WIND = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
-var MILE = 0.621371; // 1 mile in km
+var MILE = 0.621371; // 1 km in miles
 
 var format = {
   getCurrentTime: function getCurrentTime(date, format) {
@@ -13117,7 +13113,7 @@ var format = {
       hours = isAddZero(hours);
       return hours + ':' + minutes;
     } else {
-      var amPm = hours > 12 ? 'pm' : 'am';
+      var amPm = hours > 11 ? 'PM' : 'AM';
       if (hours > 12) hours -= 12;else if (hours === 0) hours = '12';
       return hours + ':' + minutes + ' ' + amPm;
     }
