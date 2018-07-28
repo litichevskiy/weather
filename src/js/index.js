@@ -64,8 +64,6 @@ storage.init( store.settings )
   })
 });
 
-
-
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('./sw.js')
     .then( response => {

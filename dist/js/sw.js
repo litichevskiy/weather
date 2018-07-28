@@ -74,7 +74,7 @@ module.exports = __webpack_require__(1);
 /* 1 */
 /***/ (function(module, exports) {
 
-const CACHE_NAME = ['v-1-2'];
+const CACHE_NAME = ['v-1-2-1'];
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
