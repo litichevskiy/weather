@@ -16,26 +16,32 @@ const store = {
   weatherFor: [],
   notFound: false,
   onlineStatus: navigator.onLine || window.navigator.onLine,
+  isCardWeather: undefined,
 
   async addNewCiti( link, name, geonameid ) {
+    if( !link ) return console.error(`link ${link} can not be empty`);
     let city, weather;
     try{
       city = await serverApi.getCity( link );
       if( !city ) throw new Error();
       const { latitude, longitude } = city['location']['latlon'];
+      if( !latitude || !longitude ) {
+        return console.error(`latitude ${latitude} and longitude ${longitude} can not be empty`);
+      }
       weather = await serverApi.getWeather(`(${latitude}, ${longitude})`);
       if( !weather ) throw new Error();
       weather = weather.query.results.channel;
       weather._name = name;
       weather.geonameid = geonameid;
     } catch( error ) {
-      debugger
       console.error( error );
+      weather = false;
     }
     return weather;
   },
 
   async getWeather( coord ) {
+    if( !coord ) return console.error(`coord ${coord} can not be empty`);
     return await serverApi.getWeather( coord );
   },
 
@@ -56,7 +62,6 @@ const store = {
         result.push( response );
       }
     } catch( error ) {
-      debugger
       console.log( error );
       result = false;
     }
@@ -87,6 +92,7 @@ const store = {
   },
 
   async getCitiesBySubstring( substring ) {
+    if( !substring ) return console.error('substring can not be empty');
     let response, list;
     try{
       response = await serverApi.getCitiesBySubstring( substring );
@@ -94,10 +100,20 @@ const store = {
       list = response._embedded['city:search-results'];
       if( response.count > 0 ) this.memoryCities[substring] = list;
     } catch( error ) {
-      debugger
       console.error( error );
     }
     return list;
+  },
+
+  showHidePulsing( bol ) {
+    if( bol ) {
+      (document.querySelector('.pulsingContainer')).style.display = 'none';
+      this.isCardWeather = true;
+    }
+    else{
+     (document.querySelector('.pulsingContainer')).style.display = 'block';
+      this.isCardWeather = false;
+    }
   },
 
   init() {
@@ -106,6 +122,9 @@ const store = {
     });
     window.addEventListener('offline', () => {
       this.onlineStatus = false;
+      this.listSities = [];
+      this.memoryCities = {};
+      pubsub.publish('create-list-cityes', this.listSities );
       pubsub.publish('show-message', {message: errorMessages.offline()});
     });
 
@@ -120,11 +139,11 @@ const store = {
     pubsub.subscribe('add-card-weather', () => {
       this.isShowBlockSearch = !this.isShowBlockSearch;
       pubsub.publish('show-block-search');
+      if( !this.isCardWeather ) this.showHidePulsing( true );
     });
 
     pubsub.subscribe('new-substring-on-search-cityes', ( data ) => {
-      if( !this.onlineStatus ) return;
-
+      if( !this.onlineStatus ) return showMessage('offline');
       pubsub.publish('disabled-cityes-not-found');
       this.notFound = false;
       let substring = data.key;
@@ -174,19 +193,13 @@ const store = {
       this.addNewCiti( link, fullName, geoId )
       .then(response => {
         pubsub.publish('end-load-card-weather');
-        if( !response ) {
-          pubsub.publish('show-message', {message: errorMessages.unknow()});
-        }
-        else if( !response.item ) {
-          pubsub.publish('show-message',{message:errorMessages.unknowCiti(response._name)});
-        }
+        if( !response ) return showMessage('unknow');
+        if( !response.item ) return showMessage('unknowCiti', response._name)
         else{
           let weatherCard = this.setWeatherCard( response );
           storage.setItem( weatherCard )
           .then( response => {
-            if( !response ) {
-              pubsub.publish('show-message', { message: errorMessages.unknow() });
-            }
+            if( !response ) showMessage('unknow');
             else{
               this.weatherFor.push( geoId );
               pubsub.publish('create-card-weater', weatherCard );
@@ -197,26 +210,20 @@ const store = {
     });
 
     pubsub.subscribe('update-all-weather-card', () => {
-      if( !this.onlineStatus ) return;
+      if( !this.onlineStatus ) return showMessage('offline');
       pubsub.publish('start-updated-all-weather-card');
       this.updateWeatherCities()
       .then( response => {
         pubsub.publish('end-updated-all-weather-card');
-        if( !response ) {
-          pubsub.publish('show-message', {message: errorMessages.unknow()});
-        }
+        if( !response ) return showMessage('unknow');
         else{
           response.forEach(item => {
             let id = item.id;
             let weatherCard = this.setWeatherCard( item, id );
             storage.updateItem( id, weatherCard )
             .then( response => {
-              if( !response ) {
-                pubsub.publish('show-message', {message: errorMessages.unknow()});
-              }
-              else{
-                pubsub.publish('update-card-weater', weatherCard );
-              }
+              if( !response ) return showMessage('unknow');
+              else pubsub.publish('update-card-weater', weatherCard );
             })
           });
         }
@@ -233,9 +240,7 @@ const store = {
       if( typeof id !== 'number' ) return console.error('id must be a number');
       storage.deleteItem( id )
       .then( response => {
-        if( !response ) {
-          pubsub.publish('show-message', { message: errorMessages.unknow() });
-        }
+        if( !response ) showMessage('unknow');
         else{
           const card = response[0];
           const index = this.weatherFor.indexOf( card.geonameid );
@@ -247,6 +252,8 @@ const store = {
 
     pubsub.subscribe('init-app', ( list ) => {
       this.weatherFor = list.map(item => item.geonameid);
+      this.isCardWeather = ( list.length > 0 ) ? true : false;
+      this.showHidePulsing( this.isCardWeather );
     });
 
     pubsub.subscribe('clicked-open-settings', () => {
@@ -269,6 +276,11 @@ const store = {
 };
 
 store.init();
+
+const showMessage = ( key, message ) => {
+  if( message ) pubsub.publish('show-message', {message: errorMessages[key](message)});
+  else pubsub.publish('show-message', { message: errorMessages[key]() });
+};
 const createId = () => Date.now();
 const getGeonameId = (str) => str.match(/geonameid:(\d{1,})\//)[1];
 

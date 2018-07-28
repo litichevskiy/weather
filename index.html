@@ -5,6 +5,7 @@
     <link rel="stylesheet" type="text/css" href="dist/css/bundle.css">
     <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
     <meta charset="utf-8">
+    <meta name="theme-color" content="#2F3BA2"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
@@ -17,6 +18,11 @@
   </head>
   <body>
     <div class="app">
+      <div class="pulsingContainer">
+        <div class="pulsingCircle"></div>
+        <div class="pulsingCircle"></div>
+        <div class="pulsingCircle"></div>
+      </div>
       <div class="containerMessage">
         <div class="message"></div>
       </div>
@@ -29,8 +35,8 @@
       </header>
       <section class="containerMenu">
         <header class="headerMenu">
-          <a class="poweredby" href="https://www.yahoo.com/?ilc=401" target="_blank">
-            <img src = "./images/poweredby.png" />
+          <a class="poweredby" rel="noopener" href="https://www.yahoo.com/?ilc=401" target="_blank">
+            <img src = "./images/poweredby.png" alt="powered by yahoo" />
           </a>
         </header>
         <div class="wrapperSettings">

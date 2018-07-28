@@ -27,8 +27,10 @@ new Menu({
 // let preloader = new Preloader({ parent: document.querySelector('.preloaderApp')});
 // preloader.enabled();
 
+
 storage.init( store.settings )
 .then( response => {
+
   if( !response ) return alert("your browser is not supported");
   store.settings = response.settings;
   pubsub.publish('set-current-settings', { settings:store.settings });
@@ -40,6 +42,7 @@ storage.init( store.settings )
   // }
   pubsub.publish('init-app', list );
   list.forEach( item => pubsub.publish('create-card-weater', item ));
+
   console.log( 'CARD ',  list )
   list.forEach( ( item, index ) => {
     const { city, region } = item.location;

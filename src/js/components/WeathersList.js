@@ -30,7 +30,8 @@ class WeathersList {
 
     this.container.addEventListener('click', ( event ) => {
       let target = event.target;
-      let action = dataRoles[target.dataset.role];
+
+      let action = dataRoles[target.getAttribute('data-role')];
       if( !action ) return;
 
       this[action]( target );
@@ -55,7 +56,7 @@ class WeathersList {
 
   deleteCard( target ) {
     let card = getParentNode( target, 'LI' );
-    pubsub.publish( 'delete-card', { id: +card.dataset.id });
+    pubsub.publish( 'delete-card', { id: +card.getAttribute('data-id') });
     this.container.removeChild( card );
   }
 
@@ -78,17 +79,17 @@ class WeathersList {
       todayMinMax = data.item.forecast[0];
 
       (card.querySelector('.temperatureToday'))
-      .innerHTML = format.fahrenheitToCelsius(+data.item.condition.temp, temperature );
+      .innerHTML = format.convertTemperature(+data.item.condition.temp, temperature );
       (card.querySelector('.minToday'))
-      .innerHTML = format.fahrenheitToCelsius(+todayMinMax.low, temperature );
+      .innerHTML = format.convertTemperature(+todayMinMax.low, temperature );
       (card.querySelector('.maxToday'))
-      .innerHTML = format.fahrenheitToCelsius(+todayMinMax.low, temperature );
+      .innerHTML = format.convertTemperature(+todayMinMax.high, temperature );
 
       forecastList.forEach(( item, index ) => {
         (forecastItems[index].querySelector('.minT'))
-        .innerHTML = format.fahrenheitToCelsius(+item.low, temperature );
+        .innerHTML = format.convertTemperature(+item.low, temperature );
         (forecastItems[index].querySelector('.maxT'))
-        .innerHTML = format.fahrenheitToCelsius(+item.high, temperature );
+        .innerHTML = format.convertTemperature(+item.high, temperature );
       });
     });
   }
@@ -143,17 +144,27 @@ function createForecast( list, tempFormat ) {
           <div class="containerMinMax">
             <div class="maxTemperature">
               <span class="minIcon">&#8595;</span>
-              <span class="minT">${format.fahrenheitToCelsius( +item.low, tempFormat )}</span>
+              <span class="minT">${format.convertTemperature( +item.low, tempFormat )}</span>
             </div>
             <div class="minTemperature">
               <span class="maxIcon">&#8593;</span>
-              <span class="maxT">${format.fahrenheitToCelsius(+item.high, tempFormat)}</span>
+              <span class="maxT">${format.convertTemperature(+item.high, tempFormat)}</span>
             </div>
           </div>
         </div>
       </li>`
   },``);
 };
+
+  //<svg class="deleteCard" data-role="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642" width="14" >
+    //<title id="Delete city">Delete city</title>
+    //<path data-role="delete" fill="#FFF" d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z"/>
+  //</svg>
+
+        // <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642" width="14" >
+        //   <title id="Delete city">Delete city</title>
+        //   <path data-role="delete" fill="#FFF" d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z"/>
+        // </svg>
 
 function templateCard( data ) {
   const { location, item, atmosphere, wind, astronomy } = data;
@@ -162,10 +173,7 @@ function templateCard( data ) {
   const forecast = item.forecast.slice(1,);
   const todayMinMax = item.forecast[0];
   const template =
-      `<svg class="deleteCard" data-role="delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.642 15.642" width="14" >
-        <title id="Delete city">Delete city</title>
-        <path data-role="delete" fill="#FFF" d="M8.882,7.821l6.541-6.541c0.293-0.293,0.293-0.768,0-1.061  c-0.293-0.293-0.768-0.293-1.061,0L7.821,6.76L1.28,0.22c-0.293-0.293-0.768-0.293-1.061,0c-0.293,0.293-0.293,0.768,0,1.061  l6.541,6.541L0.22,14.362c-0.293,0.293-0.293,0.768,0,1.061c0.147,0.146,0.338,0.22,0.53,0.22s0.384-0.073,0.53-0.22l6.541-6.541  l6.541,6.541c0.147,0.146,0.338,0.22,0.53,0.22c0.192,0,0.384-0.073,0.53-0.22c0.293-0.293,0.293-0.768,0-1.061L8.882,7.821z"/>
-      </svg>
+      `<div class="deleteCard" data-role="delete"></div>
       <div class="row">
         <div class="cell">
         <div class="cityName">${location.city}</div>
@@ -178,15 +186,15 @@ function templateCard( data ) {
         </div>
         <div class="blockTemperature">
           <div class="containerTemperatureToday">
-            <div class="temperatureToday">${format.fahrenheitToCelsius(+item.condition.temp, temperature )}</div>
+            <div class="temperatureToday">${format.convertTemperature(+item.condition.temp, temperature )}</div>
             <div class="containerMinMaxToday">
               <div class="wrapper">
                 <small>&#8595;</small>
-                <span class="minToday">${format.fahrenheitToCelsius(+todayMinMax.low, temperature)}</span>
+                <span class="minToday">${format.convertTemperature(+todayMinMax.low, temperature)}</span>
               </div>
               <div class="wrapper">
                 <small>&#8593;</small>
-                <span class="maxToday">${format.fahrenheitToCelsius(+todayMinMax.high, temperature)}</span>
+                <span class="maxToday">${format.convertTemperature(+todayMinMax.high, temperature)}</span>
               </div>
             </div>
           </div>

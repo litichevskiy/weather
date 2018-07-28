@@ -1,19 +1,17 @@
 .containerMessage{
   position: absolute;
-  top: -300px;
+  top: -600px;
   left: 0.3em;
   width: 250px;
   padding: 1.65em 0.7em 0.7em 0.7em;
   z-index: 3;
-  background-color: cornsilk;
+  background-color: #cce5ff;
   border-radius: 4px;
-  color: #403939;
+  color: #004085;
   box-shadow: 0px 0px 7px 1px #4a4747;
-  transition: 0.2s;
-  display: none;
+  transition: 0.25s;
 
   &.active{
-    display: inline-block;
     top: 0.3em;
   }
 
@@ -29,7 +27,7 @@
   }
 
   .message{
-    font-size: 1em;
+    font-size: 1.07em;
     white-space: pre-line;
   }
 }

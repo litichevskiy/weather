@@ -46,6 +46,13 @@ module.exports = [
           }
         },
         {
+          test: /\.(png|jp(e*)g|svg)$/,
+          exclude: /\/node_modules\//,
+          use: [{
+              loader: 'url-loader',
+          }]
+        },
+        {
           test: /\.(woff(2)?|ttf|eot|svg)$/,
           use: [{
               loader: 'file-loader',

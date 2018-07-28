@@ -38,7 +38,7 @@ const format = {
     }
   },
 
-  fahrenheitToCelsius( deg, prefix ) {
+  convertTemperature( deg, prefix ) {
     if( prefix === 'c' ) return (( deg - 32 ) / 1.8).toFixed( 0 ) + ' °C';
     else return deg + ' °F'
   },

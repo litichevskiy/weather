@@ -1,13 +1,12 @@
 .header{
-  @extend .flexCentered;
   position: relative;
   z-index: 1;
   height: $header-height;
   width: 100%;
   background-color: $bg-color-header;
   padding: 0 0.6em;
-  justify-content: space-between;
   box-shadow: $default-box-shadow;
+  width: 100%;
 
   .title{
     display: inline-block;
@@ -17,12 +16,16 @@
 
   .wrapper{
     @extend .inlineFlexCentered;
+    float: left;
+    height: 100%;
   }
 
   .wrapperButtons{
     display: inline-flex;
     height: 100%;
     align-items: center;
+    float: right;
+    height: 100%;
   }
 
   .updateCard{
@@ -39,8 +42,13 @@
     margin-left: 9px;
   }
 
+  .btnMenu{
+    @extend .inlineFlexCentered;
+  }
+
   .settings{
     @extend .defaultBtn;
+    @extend .inlineFlexCentered;
     margin-right: 13px;
   }
 }

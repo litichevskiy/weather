@@ -14,8 +14,6 @@
   }
 
   .headerMenu{
-    @extend .flexCentered;
-    justify-content: space-between;
     padding: 0 0.9em 0 0.6em;
     position: relative;
     height: $header-height;
@@ -33,6 +31,8 @@
 
   .poweredby{
     @extend .inlineFlexCentered;
+    float: left;
+    height: 100%;
   }
 
   .containerSettings{
@@ -69,7 +69,8 @@
     @extend .defaultBtn;
     @extend .inlineFlexCentered;
     width: 30px;
-    height: 30px;
+    float: right;
+    height: 100%;
   }
 
   .itemSettings{

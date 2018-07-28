@@ -1,10 +1,11 @@
-const CACHE_NAME = ['v-1d_r4hbv1'];
+const CACHE_NAME = ['v-1-1'];
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
   '/manifest.json',
   '/dist/js/bundle.js',
   '/dist/css/bundle.css',
+  '/images/cancel.png',
   '/images/weather/clear.png',
   '/images/weather/cloudy.png',
   '/images/weather/fog.png',

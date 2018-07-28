@@ -25,7 +25,10 @@
       padding: 0.4em 0.2em 0 0.2em;
     }
 
-    .cell:nth-child(1),
+    .cell:nth-child(1){
+      margin: 0 0 1.7em 0;
+    }
+
     .cell:nth-child(2){
       margin: 0 0 0.7em 0;
       width: 100%;
@@ -34,7 +37,7 @@
     .blockTemperature{
       display: flex;
       justify-content: space-around;
-      margin-top: 0.6em;
+      margin-top: 1.2em;
     }
 
     .containerTemperatureToday{
@@ -55,6 +58,10 @@
   }
 
   @media (max-width: 600px) {
+    .cell:nth-child(1){
+      width: 100%;
+    }
+
     .listForecast{
       width: 100%;
     }
@@ -113,16 +120,38 @@
       flex-direction: row;
       justify-content: space-between;
 
+      .maxTemperature,
+      .minTemperature{
+        text-align: right;
+      }
+
       .cellForecast{
         flex-direction: column;
 
         &:nth-child(2){
           flex-direction: row;
+          justify-content: flex-end;
         }
       }
 
       .containerMinMax{
         flex-direction: column;
+      }
+    }
+  }
+
+  @media (max-width: 360px) {
+    .itemForecast{
+      display: flex;
+      justify-content: flex-start;
+      width: 100%;
+
+      .cellForecast{
+        width: 50%;
+
+        &:nth-child(2){
+          width: 50%;
+        }
       }
     }
   }

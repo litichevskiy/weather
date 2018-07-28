@@ -28,13 +28,15 @@
 
   .deleteCard{
     @extend .defaultBtn;
-    border-radius: 5px;
     position: absolute;
     top: 0.35em;
     padding: 5px;
     right: 0.35em;
     border-radius: 4px;
     box-shadow: 0px 0px 4px 0px #2b2b2b;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-image: url('../images/cancel.png');
   }
 
   .cityName{
@@ -91,6 +93,7 @@
       padding: 0.22em 0;
       font-size: 1.1em;
       border-bottom: 1px dotted #bdbbbb;
+      margin: 0.2em 0;
     }
 
     .title{
@@ -164,6 +167,10 @@
         align-items: flex-start;
       }
     }
+  }
+
+  .itemForecast:last-child{
+    border: none;
   }
 
   .imgForecast{

@@ -27,7 +27,7 @@ class ListSities {
 
   selectedCity( event ) {
     this.selectItemList.disabled();
-    pubsub.publish('selected-city', { index: event.target.dataset.index });
+    pubsub.publish('selected-city', { index: event.target.getAttribute('data-index') });
   }
 };
 
