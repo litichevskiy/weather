@@ -74,10 +74,9 @@ module.exports = __webpack_require__(1);
 /* 1 */
 /***/ (function(module, exports) {
 
-const CACHE_NAME = ['v-1-1532979823718'];
+const CACHE_NAME = ['v-1-1532982874708'];
 const FILES_TO_CACHE = [
   '/',
-  '/index.html',
   '/manifest.json',
   '/dist/js/bundle.js',
   '/dist/css/bundle.css',
