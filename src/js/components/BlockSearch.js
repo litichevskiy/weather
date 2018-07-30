@@ -1,7 +1,6 @@
 const pubsub = new ( require('../utils/pubSub') );
 const InputSearch = require('./InputSearch');
 const ButtonImg = require('./ButtonImg');
-const serverApi = require('../serverApi');
 const Preloader = require('./Preloader');
 const ESC = 27;// keyCode;
 

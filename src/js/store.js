@@ -214,8 +214,10 @@ const store = {
       pubsub.publish('start-updated-all-weather-card');
       this.updateWeatherCities()
       .then( response => {
-        pubsub.publish('end-updated-all-weather-card');
-        if( !response ) return showMessage('unknow');
+        if( !response ) {
+          pubsub.publish('end-updated-all-weather-card');
+          return showMessage('unknow');
+        }
         else{
           response.forEach(item => {
             let id = item.id;
@@ -226,6 +228,7 @@ const store = {
               else pubsub.publish('update-card-weater', weatherCard );
             })
           });
+          pubsub.publish('end-updated-all-weather-card');
         }
       });
     });

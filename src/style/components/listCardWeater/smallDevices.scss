@@ -21,17 +21,40 @@
   }
 
   @media (max-width: 650px) {
+    .descriptionAtmosphere{
+
+      .content:last-child{
+        border: none;
+      }
+    }
+
+    .itemForecast{
+
+      .minTemperature{
+        margin-right: 0;
+      }
+    }
+
     .itemCardWeather{
-      padding: 0.4em 0.2em 0 0.2em;
+      padding: 0.5em 0.6em 0 0.6em;
+    }
+
+    .listForecast{
+      width: 100%;
+    }
+
+    .condition{
+      text-align: center;
+    }
+
+    .cell:nth-child(2),
+    .cell:nth-child(1){
+      margin: 0 0 0.7em 0;
+      width: 100%;
     }
 
     .cell:nth-child(1){
       margin: 0 0 1.7em 0;
-    }
-
-    .cell:nth-child(2){
-      margin: 0 0 0.7em 0;
-      width: 100%;
     }
 
     .blockTemperature{
@@ -43,6 +66,7 @@
     .containerTemperatureToday{
       margin: 0;
       justify-content: space-between;
+      align-items: center;
     }
 
     .temperatureToday{
@@ -72,6 +96,9 @@
       }
     }
       .itemForecast{
+        .maxTemperature{
+          margin-right: 0;
+        }
 
         .cellForecast{
 

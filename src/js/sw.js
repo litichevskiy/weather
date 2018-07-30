@@ -1,4 +1,4 @@
-const CACHE_NAME = ['v-1-2-1_'];
+const CACHE_NAME = ['v-1-1532979823718'];
 const FILES_TO_CACHE = [
   '/',
   '/index.html',
@@ -20,22 +20,24 @@ const FILES_TO_CACHE = [
   '/dist/fonts/MjQGmil5tffhpBrknt6sfQ.woff2',
 ];
 
-const updateCache = () => {
-  console.log('sw: UPDATECACHE');
-  caches.keys().then(function(keyList) {
-      return Promise.all(keyList.map(function(key) {
+self.addEventListener('activate', ( event ) => {
+  console.log('sw: DELETE OLD CACHE');
+  event.waitUntil(
+    caches.keys().then( keyList => {
+      return Promise.all(keyList.map( key => {
         if (CACHE_NAME.indexOf(key) === -1) {
           return caches.delete(key);
         }
       }));
     })
-}
+  );
+});
 
 self.addEventListener('install', ( event ) => {
   console.log('sw: INSTALL');
   event.waitUntil(
-    caches.open( CACHE_NAME )
-    .then(function(cache) {
+    caches.open( CACHE_NAME[0] )
+    .then( cache => {
       return cache.addAll( FILES_TO_CACHE );
     })
   );
@@ -45,10 +47,8 @@ self.addEventListener('fetch', ( event ) => {
   console.log('sw: FETCH');
   event.respondWith(
     caches.match(event.request)
-    .then(function(response) {
+    .then( response => {
       return response || fetch(event.request);
     })
   );
 });
-
-updateCache();

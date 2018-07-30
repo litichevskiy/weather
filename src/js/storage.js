@@ -44,7 +44,6 @@ module.exports = {
 
   async deleteItem( id ) {
     let response, index, card;
-
     try{
       response = await this.getStorage();
       response.listWeather.some( (item, i) => {
