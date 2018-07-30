@@ -1,4 +1,4 @@
-const CACHE_NAME = ['v-1-1532986210492'];
+const CACHE_NAME = ['v-1-1532987273564'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
@@ -20,7 +20,6 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener('activate', ( event ) => {
-  console.log('sw: DELETE OLD CACHE');
   event.waitUntil(
     caches.keys().then( keyList => {
       return Promise.all(keyList.map( key => {
@@ -33,7 +32,6 @@ self.addEventListener('activate', ( event ) => {
 });
 
 self.addEventListener('install', ( event ) => {
-  console.log('sw: INSTALL');
   event.waitUntil(
     caches.open( CACHE_NAME[0] )
     .then( cache => {
@@ -43,7 +41,6 @@ self.addEventListener('install', ( event ) => {
 });
 
 self.addEventListener('fetch', ( event ) => {
-  console.log('sw: FETCH');
   event.respondWith(
     caches.match(event.request)
     .then( response => {
