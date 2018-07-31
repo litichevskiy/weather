@@ -39,7 +39,6 @@ if('serviceWorker' in navigator) {
   navigator.serviceWorker.register('./sw.js')
   .then( response => {
     response.update();
-    console.log('Service Worker Registered');
   })
   .catch(error => {
     console.error(error)
