@@ -117,9 +117,14 @@ const store = {
   },
 
   init() {
+    document.addEventListener('visibilitychange', () => {
+      if( !document.hidden ) pubsub.publish('update-all-weather-card');
+    }, false);
+
     window.addEventListener('online', () => {
       this.onlineStatus = true;
     });
+
     window.addEventListener('offline', () => {
       this.onlineStatus = false;
       this.listSities = [];
