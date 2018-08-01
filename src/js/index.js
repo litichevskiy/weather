@@ -9,6 +9,7 @@ const ListSities = require('./components/ListSities');
 const Message = require('./components/Message');
 const NotFound = require('./components/NotFound');
 const Menu = require('./components/Menu');
+const Swipedetect = require('./utils/Swipedetect');
 
 new BlockSearch({ container: document.querySelector('.blockSearch') });
 new Header({ container: document.querySelector('.header') });
@@ -23,6 +24,7 @@ new Menu({
   container: document.querySelector('.containerMenu'),
   form: document.querySelector('.containerSettings'),
 });
+new Swipedetect({ container: document.querySelector('.containerMenu') })
 
 storage.init( store.settings )
 .then( response => {

@@ -2,15 +2,31 @@
   position: absolute;
   top: 0;
   bottom: 0;
-  left: -400px;
-  width: 400px;
+  left: 0;
+  width: 0.7em;
   z-index: 2;
-  background-color: #26272b;
-  transition: 0.3s left, right;
+  background-color: transparent;
 
   &.enabled{
+    width: 100%;
+    background-color: rgba(38, 36, 36, 0.64);
+
+    .swipeContainer{
+      transform: translateX(0);
+      box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14);
+    }
+  }
+
+  .swipeContainer{
+    position: absolute;
+    top: 0;
+    bottom: 0;
     left: 0;
-    box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14);
+    right: 10px;
+    width: 400px;
+    background-color: #26272b;
+    transform: translateX(-100%);
+    transition: 0.3s ease-in-out transform;
   }
 
   .headerMenu{

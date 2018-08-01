@@ -280,6 +280,11 @@ const store = {
         }
       });
     });
+
+    pubsub.subscribe('swipe-detect', ( direction ) => {
+      if( direction === 'right' ) pubsub.publish('open-settings');
+      else if( direction === 'left' ) pubsub.publish('close-menu');
+    });
   }
 };
 
