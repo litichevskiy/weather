@@ -5,6 +5,7 @@
   left: 0;
   width: 0.7em;
   z-index: 2;
+  transform: translateZ(0);
   background-color: transparent;
 
   &.enabled{
@@ -12,7 +13,7 @@
     background-color: rgba(38, 36, 36, 0.64);
 
     .swipeContainer{
-      transform: translateX(0);
+      left: 0;
       box-shadow: 1px 0px 5px 0px rgba(0, 0, 0, 0.14);
     }
   }
@@ -21,12 +22,11 @@
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 0;
-    right: 10px;
+    left: -400px;
     width: 400px;
     background-color: #26272b;
-    transform: translateX(-100%);
-    transition: 0.3s ease-in-out transform;
+    transform: translateZ(0);
+    transition: 0.3s ease-in-out left, right;
   }
 
   .headerMenu{
