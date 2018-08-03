@@ -269,9 +269,9 @@ const store = {
     });
 
     pubsub.subscribe('new-settings', ( data ) => {
+      if( !this.settings[data.key] ) throw new Error(`${data.key} unknow value`);
       storage.setSettings( data )
       .then( response => {
-
         for( let key in response.settings ) {
           if( this.settings[key] !== response.settings[key] ) {
             this.settings[key] = response.settings[key];

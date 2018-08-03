@@ -1,3 +1,4 @@
+const getParentNode = require('../utils/getParentNode');
 const pubsub = new ( require('../utils/pubSub') );
 const ButtonImg = require('./ButtonImg');
 
@@ -18,7 +19,8 @@ class Menu {
       title: 'Close',
       handlerClick: this.closeMenu,
     });
-    data.form.addEventListener('submit', this.saveSettings);
+
+    data.form.addEventListener('click', this.saveSettings);
   }
 
   closeMenu() {
@@ -30,14 +32,9 @@ class Menu {
   }
 
   saveSettings ( event ){
-    event.preventDefault();
-    let settings = [...event.target.querySelectorAll('input:checked')];
-    settings = settings.reduce( ( data, item ) => {
-      data[item.name] = item.value;
-      return data;
-    }, {});
-    pubsub.publish('new-settings', settings);
-    this.closeMenu();
+    let target = event.target;
+    if( target.tagName !== 'INPUT' ) return;
+    pubsub.publish('new-settings', {key: target.name, value: target.value});
   }
 
   setCurrentValue( data ) {

@@ -62,11 +62,11 @@ module.exports = {
     return card;
   },
 
-  async setSettings( settings ) {
+  async setSettings( data ) {
     let response;
     try{
       response = await this.getStorage();
-      response.settings = settings;
+      response.settings[data.key] = data.value;
       response = await localforage.setItem( STORAGE_NAME, response )
     } catch( error ) {
       console.error( error );

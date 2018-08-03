@@ -143,8 +143,8 @@ function createForecast( list, tempFormat ) {
           <img class="imgForecast" src="images/weather/${CODES[item.code]}.png" alt=""/>
           <div class="containerMinMax">
             <div class="maxTemperature">
-              <span class="minIcon">&#8595;</span>
-              <span class="minT">${format.convertTemperature( +item.low, tempFormat )}</span>
+              <span class="minIcon monospaceNumber">&#8595;</span>
+              <span class="minT monospaceNumber">${format.convertTemperature( +item.low, tempFormat )}</span>
             </div>
             <div class="minTemperature">
               <span class="maxIcon">&#8593;</span>
@@ -170,21 +170,21 @@ function templateCard( data ) {
         <div class="regionName">${location.country} ${location.region}</div>
         <div class="containerDate">
           <small class="content">${format.formateToday(date)}</small>
-          <small class="content">updated in:
+          <small class="content monospaceNumber">updated in:
             <small data-time-update="time-update">${format.getCurrentTime(date, timeFormat)}</small>
           </small>
         </div>
         <div class="blockTemperature">
           <div class="containerTemperatureToday">
-            <div class="temperatureToday">${format.convertTemperature(+item.condition.temp, temperature )}</div>
+            <div class="temperatureToday monospaceNumber">${format.convertTemperature(+item.condition.temp, temperature )}</div>
             <div class="containerMinMaxToday">
               <div class="wrapper">
                 <small>&#8595;</small>
-                <span class="minToday">${format.convertTemperature(+todayMinMax.low, temperature)}</span>
+                <span class="minToday monospaceNumber">${format.convertTemperature(+todayMinMax.low, temperature)}</span>
               </div>
               <div class="wrapper">
                 <small>&#8593;</small>
-                <span class="maxToday">${format.convertTemperature(+todayMinMax.high, temperature)}</span>
+                <span class="maxToday monospaceNumber">${format.convertTemperature(+todayMinMax.high, temperature)}</span>
               </div>
             </div>
           </div>
@@ -197,31 +197,31 @@ function templateCard( data ) {
         <div class="cell descriptionAtmosphere">
           <div class="content">
             <span class="title">humidity</span>
-            <span class="humidity">${atmosphere.humidity}%</span>
+            <span class="humidity monospaceNumber">${atmosphere.humidity}%</span>
           </div>
           <div class="content">
             <span class="title">pressure</span>
-            <span class="pressure">
+            <span class="pressure monospaceNumber">
               ${atmosphere.pressure}
               mbar ${getRising(+atmosphere.rising)}
             </span>
           </div>
           <div class="content">
             <span class="title">visibility</span>
-            <span class="visibility">${format.getWindStrength(atmosphere.visibility, speed, '')}</span>
+            <span class="visibility monospaceNumber">${format.getWindStrength(atmosphere.visibility, speed, '')}</span>
           </div>
           <div class="content">
             <span class="title">wind</span>
-            <span class="wind">${format.getWindStrength(wind.speed, speed, '/h')}</span>
+            <span class="wind monospaceNumber">${format.getWindStrength(wind.speed, speed, '/h')}</span>
             <span class="windDirection">${format.getDirectionWind(+wind.direction)}</span>
           </div>
           <div class="content">
             <span class="title">sunrise</span>
-            <span class="sunrise">${format.getTimeSunriseSunset(astronomy.sunrise, timeFormat, 'am')}</span>
+            <span class="sunrise monospaceNumber">${format.getTimeSunriseSunset(astronomy.sunrise, timeFormat, 'am')}</span>
           </div>
           <div class="content">
             <span class="title">sunset</span>
-            <span class="sunset">${format.getTimeSunriseSunset(astronomy.sunset, timeFormat, 'pm')}</span>
+            <span class="sunset monospaceNumber">${format.getTimeSunriseSunset(astronomy.sunset, timeFormat, 'pm')}</span>
           </div>
         </div>
         <div class="wrapperForecast">
