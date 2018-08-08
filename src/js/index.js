@@ -9,7 +9,7 @@ const ListSities = require('./components/ListSities');
 const Message = require('./components/Message');
 const NotFound = require('./components/NotFound');
 const Menu = require('./components/Menu');
-const Swipedetect = require('./utils/Swipedetect');
+const SavedCities = require('./components/SavedCities');
 
 new BlockSearch({ container: document.querySelector('.blockSearch') });
 new Header({ container: document.querySelector('.header') });
@@ -24,25 +24,36 @@ new Menu({
   container: document.querySelector('.containerMenu'),
   form: document.querySelector('.containerSettings'),
 });
-new Swipedetect({ container: document.querySelector('.containerMenu') });
+new SavedCities({container: document.querySelector('.blockSavedCities')} );
 
-storage.init( store.settings )
-.then( response => {
-  if( !response ) return alert("your browser is not supported");
-  const { listWeather, settings } = response;
-  pubsub.publish('init-app', listWeather );
-  store.settings = settings;
-  listWeather.forEach( item => pubsub.publish('create-card-weater', item ));
-  pubsub.publish('set-current-settings', {settings: settings});
-  pubsub.publish('update-all-weather-card');
-});
+store.initApp();
 
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-  .then( response => {
-    response.update();
-  })
-  .catch(error => {
-    console.error(error)
-  });
-}
+// if('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('./sw.js')
+//   .then( response => {
+//     // caches.keys().then( keyList => {
+//     //   let lastIndex = keyList.length -1;
+
+//     //   return Promise.all(keyList.map( ( key, index ) => {
+//     //     if ( index === lastIndex ) {
+//     //       console.log( key )
+//     //       return caches.delete( key );
+//     //     }
+//     //   }));
+//     // })
+//     response.update();
+//   })
+//   .catch(error => {
+//     console.error(error)
+//   });
+// }
+
+// if('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('./dist/service-worker.js')
+//   .then( response => {
+//     response.update();
+//   })
+//   .catch(error => {
+//     console.error(error)
+//   });
+// }

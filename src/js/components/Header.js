@@ -8,6 +8,7 @@ class Header {
     this.cancelUpdated = this.cancelUpdated.bind( this );
     this.updateCard = this.updateCard.bind( this );
     this.startUpdated = this.startUpdated.bind( this );
+    this.savedCities = this.savedCities.bind( this );
     pubsub.subscribe('end-updated-all-weather-card', this.cancelUpdated);
     pubsub.subscribe('start-updated-all-weather-card', this.startUpdated);
     new ButtonImg({
@@ -16,6 +17,13 @@ class Header {
       className: 'settings',
       title: 'Settings',
       handlerClick: this.openSettings,
+    });
+    new ButtonImg({
+      parent: wrapper,
+      className: 'savedCities',
+      name: 'selectedLocation',
+      title: 'saved-cities',
+      handlerClick: this.savedCities,
     });
     this.btnUpdate = new ButtonImg({
       parent: wrapper,
@@ -51,6 +59,10 @@ class Header {
 
   openSettings() {
     pubsub.publish('clicked-open-settings');
+  }
+
+  savedCities() {
+    pubsub.publish('clicked-saved-cities');
   }
 };
 

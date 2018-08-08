@@ -17,18 +17,14 @@ const store = {
   notFound: false,
   onlineStatus: navigator.onLine || window.navigator.onLine,
   isCardWeather: undefined,
+  currentCitiId: undefined,
 
   async addNewCiti( link, name, geonameid ) {
-    if( !link ) return console.error(`link ${link} can not be empty`);
     let city, weather;
     try{
-      city = await serverApi.getCity( link );
-      if( !city ) throw new Error();
-      const { latitude, longitude } = city['location']['latlon'];
-      if( !latitude || !longitude ) {
-        return console.error(`latitude ${latitude} and longitude ${longitude} can not be empty`);
-      }
-      weather = await serverApi.getWeather(`(${latitude}, ${longitude})`);
+      name = name.split(',');
+      name = `${name[0]},${name[2]}`;
+      weather = await serverApi.getWeather( name );
       if( !weather ) throw new Error();
       weather = weather.query.results.channel;
       weather._name = name;
@@ -40,20 +36,14 @@ const store = {
     return weather;
   },
 
-  async getWeather( coord ) {
-    if( !coord ) return console.error(`coord ${coord} can not be empty`);
-    return await serverApi.getWeather( coord );
-  },
-
   async updateWeatherCities() {
-    let weatherList, response, coord, result = [];
+    let weatherList, response, result = [];
     try{
       weatherList = await storage.getStorage();
       if( !weatherList ) throw new Error();
       weatherList = weatherList.listWeather;
       for( let item of weatherList ) {
-        coord = item.coord;
-        response = await this.getWeather(`(${coord.lat}, ${coord.long})`);
+        response = await serverApi.getWeather( item._name );
         if( !response ) throw new Error();
         response = response.query.results.channel;
         response.id = item.id;
@@ -81,13 +71,13 @@ const store = {
     } = response;
     const condition = item.condition;
     const id = num || createId();
-    const lastUpdate = new Date;
+    const _updated = Date.now();
+    const lastUpdate = new Date( response.lastBuildDate.match(/(.+?M)/)[0] );
     const forecast = item.forecast.splice( 0, 6 );
-    const coord = { lat: item.lat, long: item.long }
     return {
-      coord, astronomy, atmosphere,
+      astronomy, atmosphere,
       location, units ,wind, item:{ condition, forecast },
-      lastUpdate, id, geonameid, _name
+      lastUpdate, id, geonameid, _name, _updated
     };
   },
 
@@ -118,7 +108,7 @@ const store = {
 
   init() {
     document.addEventListener('visibilitychange', () => {
-      if( !document.hidden ) pubsub.publish('update-all-weather-card');
+      // if( !document.hidden ) this.updateAllWeather();
     }, false);
 
     window.addEventListener('online', () => {
@@ -197,6 +187,7 @@ const store = {
       pubsub.publish('start-load-card-weather');
       this.addNewCiti( link, fullName, geoId )
       .then(response => {
+        console.log( response )
         pubsub.publish('end-load-card-weather');
         if( !response ) return showMessage('unknow');
         if( !response.item ) return showMessage('unknowCiti', response._name)
@@ -208,6 +199,8 @@ const store = {
             else{
               this.weatherFor.push( geoId );
               pubsub.publish('create-card-weater', weatherCard );
+              pubsub.publish('create-list-saved-sities', [weatherCard] );
+              this.changeCurrentCity( weatherCard.id );
             }
           });
         }
@@ -215,27 +208,7 @@ const store = {
     });
 
     pubsub.subscribe('update-all-weather-card', () => {
-      if( !this.onlineStatus ) return showMessage('offline');
-      pubsub.publish('start-updated-all-weather-card');
-      this.updateWeatherCities()
-      .then( response => {
-        if( !response ) {
-          pubsub.publish('end-updated-all-weather-card');
-          return showMessage('unknow');
-        }
-        else{
-          response.forEach(item => {
-            let id = item.id;
-            let weatherCard = this.setWeatherCard( item, id );
-            storage.updateItem( id, weatherCard )
-            .then( response => {
-              if( !response ) return showMessage('unknow');
-              else pubsub.publish('update-card-weater', weatherCard );
-            })
-          });
-          pubsub.publish('end-updated-all-weather-card');
-        }
-      });
+      this.updateAllWeather();
     });
 
     pubsub.subscribe('input-searh-cleared', () => {
@@ -251,17 +224,15 @@ const store = {
         if( !response ) showMessage('unknow');
         else{
           const card = response[0];
+          if( card.id === this.currentCitiId ) {
+            this.currentCitiId = undefined;
+            pubsub.publish('delete-weather-card');
+          }
           const index = this.weatherFor.indexOf( card.geonameid );
-          if( index < 0 ) console.error(`nonexistent name ${card}`);
+          if( index < 0 ) console.error(`nonexistent geo name ${card}`);
           else this.weatherFor.splice(index, 1);
         }
       });
-    });
-
-    pubsub.subscribe('init-app', ( list ) => {
-      this.weatherFor = list.map(item => item.geonameid);
-      this.isCardWeather = ( list.length > 0 ) ? true : false;
-      this.showHidePulsing( this.isCardWeather );
     });
 
     pubsub.subscribe('clicked-open-settings', () => {
@@ -275,15 +246,99 @@ const store = {
         for( let key in response.settings ) {
           if( this.settings[key] !== response.settings[key] ) {
             this.settings[key] = response.settings[key];
-            pubsub.publish(`update-units-${key}`, response.listWeather );
+            response.listWeather.some( item => {
+              if ( item.id === this.currentCitiId ) {
+                pubsub.publish(`update-units-${key}`, [item] );
+                return true;
+              }
+              else return false;
+            });
           }
         }
       });
     });
 
-    pubsub.subscribe('swipe-detect', ( direction ) => {
-      if( direction === 'right' ) pubsub.publish('open-settings');
-      else if( direction === 'left' ) pubsub.publish('close-menu');
+    pubsub.subscribe('clicked-saved-cities', () => {
+      pubsub.publish('show-saved-cities');
+    });
+
+    pubsub.subscribe('change-current-city', ( data ) => {
+      const { id } = data;
+      if( !id ) {
+        console.error(`unknow id ${id}`);
+        showMessage('unknow');
+      }
+      if( this.currentCitiId === id ) return;
+      storage.setCurrentSity( id )
+      .then( response => {
+        if( !response ) showMessage('unknow');
+        this.currentCitiId = response.id;
+        pubsub.publish('create-card-weater', response.city );
+      });
+    });
+  },
+
+  updateAllWeather() {
+    if( !this.onlineStatus ) return showMessage('offline');
+    pubsub.publish('start-updated-all-weather-card');
+    this.updateWeatherCities()
+    .then( response => {
+      if( !response ) {
+        pubsub.publish('end-updated-all-weather-card');
+        return showMessage('unknow');
+      }
+      else{
+        response = response.map( item => {
+          return this.setWeatherCard( item, item.id );
+        })
+        storage.updateAllWeather( response )
+        .then( response => {
+          if( !response ) return showMessage('unknow');
+          response.some( item => {
+            if( item.id === this.currentCitiId ) {
+                pubsub.publish('update-card-weater', item );
+                return true;
+            }
+            else return false;
+          });
+        })
+        pubsub.publish('end-updated-all-weather-card');
+      }
+    });
+  },
+
+  changeCurrentCity( id ) {
+    storage.setCurrentSity( id )
+    .then( response => {
+      if( !response ) showMessage('unknow');
+      this.currentCitiId = response.id;
+    });
+  },
+
+  initApp() {
+    storage.init( this.settings )
+    .then( response => {
+      if( !response ) return alert("your browser is not supported");
+      const { settings, listWeather } = response;
+      this.settings = settings;
+      this.weatherFor = listWeather.map(item => item.geonameid);
+      this.isCardWeather = ( listWeather.length > 0 ) ? true : false;
+      this.showHidePulsing( this.isCardWeather );
+      this.currentCitiId = response.currentSity;
+      pubsub.publish('create-list-saved-sities', listWeather );
+
+      listWeather.some( item => {
+        if( item.id === this.currentCitiId ) {
+          pubsub.publish('create-card-weater', item );
+          return true;
+        }
+        else return false;
+      })
+      pubsub.publish('set-current-settings', {settings: settings});
+      // this.updateAllWeather();
+      // VISIBILITY CHANGE
+      // VISIBILITY CHANGE
+      // VISIBILITY CHANGE
     });
   }
 };

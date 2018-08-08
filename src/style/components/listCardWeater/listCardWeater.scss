@@ -26,19 +26,6 @@
     box-shadow: $default-box-shadow;
   }
 
-  .deleteCard{
-    @extend .defaultBtn;
-    position: absolute;
-    top: 0.35em;
-    padding: 5px;
-    right: 0.35em;
-    border-radius: 4px;
-    box-shadow: 0px 0px 4px 0px #2b2b2b;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-image: url('../images/cancel.png');
-  }
-
   .cityName{
     font-size: 1.5em;
     word-wrap: break-word;
@@ -59,6 +46,15 @@
     .content{
       display: block;
       line-height: 1.4;
+    }
+
+    .descriptionTime{
+      margin-left: 0.3em;
+    }
+
+    .updatedTime{
+      margin-top: 0.5em;
+      display: inline-block;
     }
   }
 

@@ -4,38 +4,34 @@ const format = require('../utils/format');
 const store = require('../store');
 const Preloader = require('./Preloader');
 const CODES = require('../utils/weatherCodes');
-
-const dataRoles = {
-  'delete': 'deleteCard',
-};
+const INTERVAL = 300000; // 5 min in ms
+const FIRST_TIME_UPDATED = 60000;// 1 min in ms
+const MAX_TIME_UPDATED = 5; // hours
 
 class WeathersList {
   constructor( data ) {
     this.container = data.container;
+    this._updated;
+    this.intervalId = undefined;
+    this.firstIntervalId = undefined;
+    this.updatedTimeElem;
     this.createCardWeater = this.createCardWeater.bind( this );
-    this.updateCardWeater = this.updateCardWeater.bind( this );
     this.enabledPreload = this.enabledPreload.bind( this );
     this.disabledPreload = this.disabledPreload.bind( this );
     this.updateTemperature = this.updateTemperature.bind( this );
     this.updateSpeed = this.updateSpeed.bind( this );
     this.updateTimeFormat = this.updateTimeFormat.bind( this );
+    this.deleteCard = this.deleteCard.bind( this );
 
     pubsub.subscribe('create-card-weater', this.createCardWeater );
-    pubsub.subscribe('update-card-weater', this.updateCardWeater );
+    pubsub.subscribe('update-card-weater', this.createCardWeater );
     pubsub.subscribe('start-load-card-weather', this.enabledPreload );
     pubsub.subscribe('end-load-card-weather', this.disabledPreload );
     pubsub.subscribe('update-units-temperature', this.updateTemperature );
     pubsub.subscribe('update-units-speed', this.updateSpeed );
     pubsub.subscribe('update-units-timeFormat', this.updateTimeFormat );
+    pubsub.subscribe('delete-weather-card', this.deleteCard );
 
-    this.container.addEventListener('click', ( event ) => {
-      let target = event.target;
-
-      let action = dataRoles[target.getAttribute('data-role')];
-      if( !action ) return;
-
-      this[action]( target );
-    });
     this.preload = new Preloader({
       parent: document.querySelector('.containerCardWeater'),
     });
@@ -46,21 +42,41 @@ class WeathersList {
     card.classList.add('itemCardWeather');
     card.setAttribute('data-id', data.id );
     card.innerHTML = templateCard( data );
+    this.deleteCard();
     this.container.appendChild( card );
+
+    this._updated = data._updated;
+    this.updatedTimeElem = card.querySelector('.updatedTime .time');
+    this.getLastUpdateTime();
+
+    this.firstIntervalId = setTimeout(() => {
+      this.updatedTimeElem.innerHTML = `over 1 minute ago`;
+    }, FIRST_TIME_UPDATED );
   }
 
-  updateCardWeater( data ) {
-    let card = this.container.querySelector(`[data-id="${data.id}"]`);
-    card.innerHTML = templateCard( data );
+  getLastUpdateTime() {
+    let time;
+    this.intervalId = setInterval(() => {
+      time = format.convertMS( Date.now() - this._updated );
+      if( time.hours < MAX_TIME_UPDATED ) {
+        time = ( time.hours < 1 ) ? `${time.minutes}m ago` : `${time.hours}h ${time.minutes}m ago`;
+        this.updatedTimeElem.innerHTML = time;
+      }
+      else{
+        clearInterval( this.intervalId );
+        this.updatedTimeElem.innerHTML = `over ${MAX_TIME_UPDATED} hours ago`;
+      }
+    }, INTERVAL );
   }
 
-  deleteCard( target ) {
-    let card = getParentNode( target, 'LI' );
-    pubsub.publish( 'delete-card', { id: +card.getAttribute('data-id') });
-    this.container.removeChild( card );
+  deleteCard() {
+    if( this.intervalId !== undefined ) clearInterval( this.intervalId );
+    if( this.firstIntervalId !== undefined ) clearInterval( this.firstIntervalId );
+    this.container.innerHTML = '';
   }
 
   enabledPreload() {
+    this.deleteCard();
     this.preload.enabled();
   }
 
@@ -163,15 +179,18 @@ function templateCard( data ) {
   const forecast = item.forecast.slice(1,);
   const todayMinMax = item.forecast[0];
   const template =
-      `<div class="deleteCard" data-role="delete"></div>
-      <div class="row">
+      `<div class="row">
         <div class="cell">
         <div class="cityName">${location.city}</div>
         <div class="regionName">${location.country} ${location.region}</div>
         <div class="containerDate">
           <small class="content">${format.formateToday(date)}</small>
-          <small class="content monospaceNumber">updated in:
+          <small class="content monospaceNumber">
             <small data-time-update="time-update">${format.getCurrentTime(date, timeFormat)}</small>
+            <small class="descriptionTime">( local time )</small>
+          </small>
+          <small class="updatedTime">
+            updated: <small class="time">now</small>
           </small>
         </div>
         <div class="blockTemperature">

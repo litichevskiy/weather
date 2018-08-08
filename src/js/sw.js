@@ -1,10 +1,9 @@
-const CACHE_NAME = ['v-1-1533306184077'];
+const CACHE_NAME = ['v-3'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
   '/dist/js/bundle.js',
   '/dist/css/bundle.css',
-  '/images/cancel.png',
   '/images/weather/clear.png',
   '/images/weather/cloudy.png',
   '/images/weather/fog.png',
@@ -20,6 +19,7 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener('activate', ( event ) => {
+  console.log( 'SW ACTIVATE' )
   event.waitUntil(
     caches.keys().then( keyList => {
       return Promise.all(keyList.map( key => {

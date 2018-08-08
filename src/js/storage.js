@@ -22,24 +22,18 @@ module.exports = {
     .catch(error => console.log( error ));
   },
 
-  async updateItem( id, newData ) {
+  async updateAllWeather( list ) {
     let response, index;
     try{
       response = await this.getStorage();
-      response.listWeather.some( (item, i) => {
-        if( item.id === id ) {
-          index = i;
-          return true;
-        }
-      });
-      response.listWeather[index] = newData;
+      response.listWeather = list;
       response = await localforage.setItem( STORAGE_NAME, response );
-
+      if( !response ) throw new Error('unknown error');
     } catch( error ) {
       console.error( error );
       response = false;
     }
-    return response;
+    return ( response ) ? response.listWeather : response;
   },
 
   async deleteItem( id ) {
@@ -74,12 +68,31 @@ module.exports = {
     return response;
   },
 
+  async setCurrentSity( id ) {
+    let response, isId, city;
+    try{
+      response = await this.getStorage();
+      isId = response.listWeather.some( item => {
+        if( item.id === id ) return city = item;
+        else return false;
+      });
+      if( !isId ) throw new Error(`${id} unknow id`);
+      else response.currentSity = id;
+      response = await localforage.setItem( STORAGE_NAME, response )
+    } catch( error ) {
+      console.log( error );
+      response = false;
+    }
+
+    return ( response ) ? {id: id, city: city} : false;
+  },
+
   async init( settings ) {
     let response;
     try{
       response = await this.getStorage();
       if( !response ) {
-        response = await localforage.setItem( STORAGE_NAME, { settings: settings, listWeather:[] });
+        response = await localforage.setItem( STORAGE_NAME, { settings: settings, listWeather:[], currentSity: '' });
       }
     } catch( error ) {
       console.log( error );

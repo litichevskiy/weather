@@ -4,15 +4,14 @@ const INCLINE = 60; //px
 class Swipedetect{
   constructor( data ) {
     this.container = data.container;
-    this.swipedetect = this.swipedetect.bind( this );
-    this.init( this.container, this.swipedetect );
+    this.init( data.swipedMove, data.swipedEnd );
   }
 
-  init() {
+  init( swipedMove, swipedEnd ) {
     let startX = 0;
     let startY = 0;
     let deltaY = 0;
-    let result = 0;
+    let deltaX = 0;
     let touches;
     this.container.addEventListener('touchstart', ( event ) => {
       touches = event.changedTouches[0];
@@ -20,21 +19,57 @@ class Swipedetect{
       startY = touches.pageY;
     });
 
-    this.container.addEventListener('touchend', ( event ) => {
+    this.container.addEventListener('touchmove', ( event ) => {
       touches = event.changedTouches[0];
       deltaY = touches.pageY - startY;
-      result = touches.pageX - startX;
-      if( deltaY < 0 ) deltaY = -deltaY;
-      if( deltaY < INCLINE ) {
-        if( result <= -1 ) this.swipedetect('left');
-          else if( result >= 1 ) this.swipedetect('right');
-      }
-    });
-  }
+      deltaX = touches.pageX - startX;
+      deltaY = -deltaY;
 
-  swipedetect( direction ) {
-    pubsub.publish('swipe-detect', direction );
+      if( deltaY > 100 ) return
+      if( touches.pageX > startX ) swipedMove('right', deltaX, event.target );
+      else swipedMove('left', deltaX, event.target);
+    });
+
+    this.container.addEventListener('touchend', ( event ) => {
+      touches = event.changedTouches[0];
+      deltaX = touches.pageX - startX;
+      swipedEnd( event.target, deltaX );
+    });
   }
 };
 
 module.exports = Swipedetect;
+
+//////////////////////////////////////////////////////////////
+    // this.container.addEventListener( 'touchmove', createEventReducer(60, event => {
+      // console.log( 'log' );
+    // }));
+
+function createEventReducer (delay, handler) {
+  let isWatching = false;
+  let interval = null;
+  let lastEvent = null;
+  let lastHandledEvent = null;
+
+  function eventReducer(event) {
+    lastEvent = event;
+    if(!isWatching) startWatching();
+  }
+
+  function startWatching() {
+    interval = setInterval(handleLastEvent, delay);
+    isWatching = true;
+  }
+
+  function stopWatching() {
+    clearInterval(interval);
+    isWatching = false;
+  }
+
+  function handleLastEvent() {
+    if(lastHandledEvent === lastEvent) return stopWatching();
+    handler(lastHandledEvent = lastEvent);
+  }
+
+  return eventReducer;
+}

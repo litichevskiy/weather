@@ -60,6 +60,18 @@ const format = {
     const year = date.getFullYear();
     return `${weekDay}, ${monthDay} ${month} ${year}`;
   },
+
+  convertMS( ms ) {
+    let hours, minutes, seconds;
+    seconds = Math.floor( ms / 1000 );
+    minutes = Math.floor( seconds / 60 );
+    seconds = seconds % 60;
+    hours = Math.floor( minutes / 60 );
+    minutes = minutes % 60;
+    hours = hours % 24;
+
+    return { hours: hours, minutes: minutes };
+  },
 };
 
 function isAddZero( num ) {
