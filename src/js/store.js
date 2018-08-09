@@ -52,7 +52,7 @@ const store = {
         result.push( response );
       }
     } catch( error ) {
-      console.log( error );
+      console.error( error );
       result = false;
     }
     return result;
@@ -108,7 +108,7 @@ const store = {
 
   init() {
     document.addEventListener('visibilitychange', () => {
-      // if( !document.hidden ) this.updateAllWeather();
+      if( !document.hidden ) this.updateAllWeather();
     }, false);
 
     window.addEventListener('online', () => {
@@ -187,7 +187,6 @@ const store = {
       pubsub.publish('start-load-card-weather');
       this.addNewCiti( link, fullName, geoId )
       .then(response => {
-        console.log( response )
         pubsub.publish('end-load-card-weather');
         if( !response ) return showMessage('unknow');
         if( !response.item ) return showMessage('unknowCiti', response._name)
@@ -335,10 +334,7 @@ const store = {
         else return false;
       })
       pubsub.publish('set-current-settings', {settings: settings});
-      // this.updateAllWeather();
-      // VISIBILITY CHANGE
-      // VISIBILITY CHANGE
-      // VISIBILITY CHANGE
+      this.updateAllWeather();
     });
   }
 };

@@ -39,37 +39,3 @@ class Swipedetect{
 };
 
 module.exports = Swipedetect;
-
-//////////////////////////////////////////////////////////////
-    // this.container.addEventListener( 'touchmove', createEventReducer(60, event => {
-      // console.log( 'log' );
-    // }));
-
-function createEventReducer (delay, handler) {
-  let isWatching = false;
-  let interval = null;
-  let lastEvent = null;
-  let lastHandledEvent = null;
-
-  function eventReducer(event) {
-    lastEvent = event;
-    if(!isWatching) startWatching();
-  }
-
-  function startWatching() {
-    interval = setInterval(handleLastEvent, delay);
-    isWatching = true;
-  }
-
-  function stopWatching() {
-    clearInterval(interval);
-    isWatching = false;
-  }
-
-  function handleLastEvent() {
-    if(lastHandledEvent === lastEvent) return stopWatching();
-    handler(lastHandledEvent = lastEvent);
-  }
-
-  return eventReducer;
-}

@@ -48,7 +48,6 @@ module.exports = {
       });
       card = response.listWeather.splice( index, 1 );
       response = await localforage.setItem( STORAGE_NAME, response );
-
     } catch( error ) {
       console.log( error )
       card = false;

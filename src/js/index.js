@@ -1,7 +1,4 @@
-const pubsub = new ( require('./utils/pubSub') );
 const store = require('./store');
-const serverApi = require('./serverApi');
-const storage = require('./storage');
 const WeathersList = require('./components/WeathersList');
 const Header = require('./components/Header');
 const BlockSearch = require('./components/BlockSearch');
@@ -28,32 +25,10 @@ new SavedCities({container: document.querySelector('.blockSavedCities')} );
 
 store.initApp();
 
-// if('serviceWorker' in navigator) {
-//   navigator.serviceWorker.register('./sw.js')
-//   .then( response => {
-//     // caches.keys().then( keyList => {
-//     //   let lastIndex = keyList.length -1;
-
-//     //   return Promise.all(keyList.map( ( key, index ) => {
-//     //     if ( index === lastIndex ) {
-//     //       console.log( key )
-//     //       return caches.delete( key );
-//     //     }
-//     //   }));
-//     // })
-//     response.update();
-//   })
-//   .catch(error => {
-//     console.error(error)
-//   });
-// }
-
-// if('serviceWorker' in navigator) {
-//   navigator.serviceWorker.register('./dist/service-worker.js')
-//   .then( response => {
-//     response.update();
-//   })
-//   .catch(error => {
-//     console.error(error)
-//   });
-// }
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+  .then( response => {
+    response.update();
+  })
+  .catch(error => console.error(error) );
+}

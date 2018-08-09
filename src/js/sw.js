@@ -1,4 +1,4 @@
-const CACHE_NAME = ['v-3'];
+const CACHE_NAME = ['v-2'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
@@ -19,7 +19,6 @@ const FILES_TO_CACHE = [
 ];
 
 self.addEventListener('activate', ( event ) => {
-  console.log( 'SW ACTIVATE' )
   event.waitUntil(
     caches.keys().then( keyList => {
       return Promise.all(keyList.map( key => {
@@ -32,6 +31,7 @@ self.addEventListener('activate', ( event ) => {
 });
 
 self.addEventListener('install', ( event ) => {
+  self.skipWaiting();
   event.waitUntil(
     caches.open( CACHE_NAME[0] )
     .then( cache => {
