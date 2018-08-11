@@ -18,6 +18,7 @@ const store = {
   onlineStatus: navigator.onLine || window.navigator.onLine,
   isCardWeather: undefined,
   currentCitiId: undefined,
+  lastUpdateTime: undefined,
 
   async addNewCiti( link, name, geonameid ) {
     let city, weather;
@@ -196,6 +197,7 @@ const store = {
           .then( response => {
             if( !response ) showMessage('unknow');
             else{
+              this.lastUpdateTime = weatherCard._updated;
               this.weatherFor.push( geoId );
               pubsub.publish('create-card-weater', weatherCard );
               pubsub.publish('create-list-saved-sities', [weatherCard] );
@@ -225,6 +227,7 @@ const store = {
           const card = response[0];
           if( card.id === this.currentCitiId ) {
             this.currentCitiId = undefined;
+            this.lastUpdateTime = undefined;
             pubsub.publish('delete-weather-card');
           }
           const index = this.weatherFor.indexOf( card.geonameid );
@@ -272,6 +275,7 @@ const store = {
       .then( response => {
         if( !response ) showMessage('unknow');
         this.currentCitiId = response.id;
+        this.lastUpdateTime = response.city._updated;
         pubsub.publish('create-card-weater', response.city );
       });
     });
@@ -295,6 +299,7 @@ const store = {
           if( !response ) return showMessage('unknow');
           response.some( item => {
             if( item.id === this.currentCitiId ) {
+                this.lastUpdateTime = item._updated;
                 pubsub.publish('update-card-weater', item );
                 return true;
             }
@@ -323,11 +328,18 @@ const store = {
       this.weatherFor = listWeather.map(item => item.geonameid);
       this.isCardWeather = ( listWeather.length > 0 ) ? true : false;
       this.showHidePulsing( this.isCardWeather );
-      this.currentCitiId = response.currentSity;
+
+      if( response.currentSity ) this.currentCitiId = response.currentSity;
+      else{
+        if ( listWeather.length > 0 ) {
+          this.currentCitiId = listWeather[listWeather.length-1].id
+        }
+      }
       pubsub.publish('create-list-saved-sities', listWeather );
 
       listWeather.some( item => {
         if( item.id === this.currentCitiId ) {
+          this.lastUpdateTime = item._updated;
           pubsub.publish('create-card-weater', item );
           return true;
         }

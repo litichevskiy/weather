@@ -1,6 +1,6 @@
 const listIp = [];
 const _KEY = '1533040504331';
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 7000;
 const express = require('express');
 const compression = require('compression');
 const path = require('path');

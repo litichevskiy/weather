@@ -14,16 +14,33 @@
   .listCardWeater{
     position: relative;
     z-index: 1;
+    width: 100%;
+    margin: 0.7em auto;
+    width: 98%;
   }
 
   .itemCardWeather{
-    padding: 0.5em;
-    margin: 0.7em 0.7em 1.4em 0.7em;
     position: relative;
-    background-color: rgba(255, 255, 255, 0.18);
+    background-color: #4f5573;
     color: white;
     border-radius: 5px;
     box-shadow: $default-box-shadow;
+    z-index: 0;
+    width: 100%;
+
+    &:nth-child(2){
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: -1;
+      width: auto;
+    }
+
+    &.disabled{
+      transition: $transition-time opacity;
+      opacity: 0;
+    }
   }
 
   .cityName{

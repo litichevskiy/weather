@@ -5,12 +5,13 @@ const getParentNode = require('../utils/getParentNode');
 const TIME_ANIMATION = 250; //ms
 const MAX_OFFSET = 60; // percent
 const ESC = 27; // keyCode
+const store = require('../store');
 
 class SavedCities {
   constructor( data ) {
     this.container = data.container;
     this.listSities = this.container.querySelector('.listSavedCities');
-
+    this.activeItem;
     this.showBlock = this.showBlock.bind( this );
     this.hideBlock = this.hideBlock.bind( this );
     this.swipedEnd = this.swipedEnd.bind( this );
@@ -36,7 +37,11 @@ class SavedCities {
 
     this.listSities.addEventListener('click', ( event ) => {
       let target = event.target;
+      if( target === this.listSities ) return
       if( target.tagName === 'LI' ) {
+        this.toggleActiveItem( this.activeItem );
+        this.activeItem = target;
+        this.toggleActiveItem( this.activeItem );
         pubsub.publish('change-current-city', {id: +target.getAttribute('data-id') });
       }
       else this.deleteItemList( target );
@@ -80,12 +85,25 @@ class SavedCities {
   }
 
   showBlock() {
+    let target = this.listSities.querySelector(`[data-id="${store.currentCitiId}"]`);
+    if( target ) {
+      this.activeItem = target;
+      this.toggleActiveItem( target );
+    }
     this.container.classList.add('enabled');
     document.addEventListener('keydown', this.checkKeyCode );
   }
 
   hideBlock() {
-    this.container.classList.remove('enabled');
+    if( this.activeItem ) {
+      this.toggleActiveItem( this.activeItem );
+      this.activeItem = undefined;
+    }
+    this.container.classList.add('animationOpacity');
+    setTimeout(() => {
+      this.container.classList.remove('animationOpacity');
+      this.container.classList.remove('enabled');
+    }, TIME_ANIMATION);
     document.removeEventListener('keydown', this.checkKeyCode );
   }
 
@@ -107,6 +125,14 @@ class SavedCities {
         </div>
       </li>`;
     }, '');
+  }
+
+  deleteActiveItem( target ) {
+    target.classList.remove('active');
+  }
+
+  toggleActiveItem( target ) {
+    target.classList.toggle('active');
   }
 
   checkKeyCode( event ) {

@@ -7,7 +7,7 @@
   z-index: 2;
   transform: translateZ(0) translateX(-100%);
   background-color: transparent;
-  transition: 0.3s ease-in-out background-color;
+  transition: $transition-time ease-in-out background-color;
 
   &:before{
     content: '';
@@ -20,7 +20,7 @@
 
   &.enabled{
     transform: translateZ(0) translateX(0);
-    background-color: rgba(38, 36, 36, 0.64);
+    background-color: $bg-transparent-layer;
 
     .swipeContainer{
       transform: translateZ(0) translateX(0);
@@ -28,7 +28,7 @@
   }
 
   &.disabled{
-    transition: 0.3s ease-in-out background-color;
+    transition: $transition-time ease-in-out background-color;
     background-color: transparent;
 
     .swipeContainer{
@@ -45,7 +45,7 @@
     width: 400px;
     background-color: #26272b;
     transform: translateZ(0) translateX(-400px);
-    transition: 0.3s ease-in-out;
+    transition: $transition-time ease-in-out;
   }
 
   .headerMenu{

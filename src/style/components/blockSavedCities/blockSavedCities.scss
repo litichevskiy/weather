@@ -4,14 +4,19 @@
   left: 0;
   bottom: 0;
   width: 100%;
-  background-color: rgba(38, 36, 36, 0.64);
+  background-color: $bg-transparent-layer;
   z-index: 0;
   opacity: 0;
-  transition: 0.3s opacity;
+  transition: $transition-time opacity;
 
   &.enabled{
     z-index: 2;
     opacity: 1;
+  }
+
+  &.animationOpacity{
+    opacity: 0;
+    transition: $transition-time;
   }
 
   .header{
@@ -52,16 +57,29 @@
     position: relative;
     background-color: white;
     color: #1f1d1d;
-    padding: 0.7em 2.4em 0.7em 0.5em;
+    padding: 13px 40px 13px 30px;
     cursor: pointer;
     box-shadow: 0px -1px 0px 0px #b1afaf inset;
 
+    &.active:before{
+      @extend .inlineFlexCentered;
+      content: '\2022';
+      font-family: sans-serif;
+      position: absolute;
+      width: 1.3em;
+      font-size: 1.25em;
+      left: 0;
+      top: 0;
+      height: 100%;
+      color: #4caf50;
+    }
+
     &.animation{
-      transition: 0.3s ease;
+      transition: $transition-time ease;
     }
 
     &.minHeight{
-      transition: 0.3s;
+      transition: $transition-time;
       height: 0px;
       padding-top: 0;
       padding-bottom: 0;
@@ -89,12 +107,5 @@
     padding: 0 0.5em;
     border-radius: 3px;
     cursor: pointer;
-    /*background-color: #f1eeee;*/
-    /*transition: 0.2s;*/
-
-    &:hover{
-      /*background-color: #d8cfcf;*/
-      /*transform: translateZ(0) scale(1.1);*/
-    }
   }
 }
