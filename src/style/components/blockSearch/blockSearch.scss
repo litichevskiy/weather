@@ -5,7 +5,7 @@
   left: 0;
   width: 100%;
   z-index: 2;
-  background-color: rgba(38, 36, 36, 0.64);
+  background-color: $bg-transparent-layer;
   overflow: auto;
   transition: $transition-time opacity;
   z-index: 2;
@@ -14,6 +14,11 @@
   &.disabled{
     z-index: -1;
     opacity: 0;
+  }
+
+  &.animationOpacity{
+    opacity: 0;
+    transition: $transition-time;
   }
 
   .containerSearch{

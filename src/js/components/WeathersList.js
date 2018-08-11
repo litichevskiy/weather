@@ -5,15 +5,13 @@ const store = require('../store');
 const Preloader = require('./Preloader');
 const CODES = require('../utils/weatherCodes');
 const INTERVAL = 300000; // 5 min in ms
-const FIRST_TIME_UPDATED = 60000;// 1 min in ms
 const MAX_TIME_UPDATED = 5; // hours
+const ANIMATION_TIME = 250; //ms
 
 class WeathersList {
   constructor( data ) {
     this.container = data.container;
-    this._updated;
     this.intervalId = undefined;
-    this.firstIntervalId = undefined;
     this.updatedTimeElem;
     this.createCardWeater = this.createCardWeater.bind( this );
     this.enabledPreload = this.enabledPreload.bind( this );
@@ -42,37 +40,43 @@ class WeathersList {
     card.classList.add('itemCardWeather');
     card.setAttribute('data-id', data.id );
     card.innerHTML = templateCard( data );
-    this.deleteCard();
     this.container.appendChild( card );
+    this.deleteCard( true );
 
-    this._updated = data._updated;
     this.updatedTimeElem = card.querySelector('.updatedTime .time');
     this.getLastUpdateTime();
-
-    this.firstIntervalId = setTimeout(() => {
-      this.updatedTimeElem.innerHTML = `over 1 minute ago`;
-    }, FIRST_TIME_UPDATED );
+    this.addIntervalUpdateTime();
   }
 
   getLastUpdateTime() {
-    let time;
-    this.intervalId = setInterval(() => {
-      time = format.convertMS( Date.now() - this._updated );
-      if( time.hours < MAX_TIME_UPDATED ) {
+    let time = format.convertMS( Date.now() - store.lastUpdateTime );
+    if( time.hours < MAX_TIME_UPDATED ) {
+      if( time.minutes >= 1 ) {
         time = ( time.hours < 1 ) ? `${time.minutes}m ago` : `${time.hours}h ${time.minutes}m ago`;
-        this.updatedTimeElem.innerHTML = time;
       }
-      else{
-        clearInterval( this.intervalId );
-        this.updatedTimeElem.innerHTML = `over ${MAX_TIME_UPDATED} hours ago`;
-      }
-    }, INTERVAL );
+      else time = `${time.seconds}s ago`;
+    }
+    else{
+      clearInterval( this.intervalId );
+      time = `over ${MAX_TIME_UPDATED} hours ago`;
+    }
+    this.updatedTimeElem.innerHTML = time;
   }
 
-  deleteCard() {
+  addIntervalUpdateTime() {
+    this.intervalId = setInterval(() => this.getLastUpdateTime(), INTERVAL);
+  }
+
+  deleteCard( isAnimation ) {
     if( this.intervalId !== undefined ) clearInterval( this.intervalId );
-    if( this.firstIntervalId !== undefined ) clearInterval( this.firstIntervalId );
-    this.container.innerHTML = '';
+    if( !isAnimation ) this.container.innerHTML = '';
+
+    if( this.container.children[1] ) {
+      this.container.children[0].classList.add('disabled');
+      setTimeout(() => {
+        this.container.children[0].remove();
+      }, ANIMATION_TIME );
+    }
   }
 
   enabledPreload() {
@@ -190,7 +194,7 @@ function templateCard( data ) {
             <small class="descriptionTime">( local time )</small>
           </small>
           <small class="updatedTime">
-            updated: <small class="time">now</small>
+            updated: <small class="time"></small>
           </small>
         </div>
         <div class="blockTemperature">

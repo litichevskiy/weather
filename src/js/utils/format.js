@@ -70,7 +70,7 @@ const format = {
     minutes = minutes % 60;
     hours = hours % 24;
 
-    return { hours: hours, minutes: minutes };
+    return { hours: hours, minutes: minutes, seconds: seconds };
   },
 };
 

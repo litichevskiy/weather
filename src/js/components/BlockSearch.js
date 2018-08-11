@@ -3,6 +3,7 @@ const InputSearch = require('./InputSearch');
 const ButtonImg = require('./ButtonImg');
 const Preloader = require('./Preloader');
 const ESC = 27;// keyCode;
+const TIME_ANIMATION = 250;//ms
 
 class BlockSearch {
   constructor( data ) {
@@ -46,7 +47,12 @@ class BlockSearch {
   }
 
   disabledBlockSearch() {
-    this.container.classList.add('disabled');
+    this.container.classList.add('animationOpacity');
+    setTimeout(() => {
+      this.container.classList.add('disabled');
+      this.container.classList.remove('animationOpacity');
+    }, TIME_ANIMATION);
+
     document.removeEventListener('keydown', this.checkKeyCode );
     this.inputSearch.disabled();
   }
