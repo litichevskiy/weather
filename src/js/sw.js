@@ -1,4 +1,4 @@
-const CACHE_NAME = ['v-2-1534021582954'];
+const CACHE_NAME = ['v-2-1534183955213'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
