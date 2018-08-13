@@ -54,7 +54,7 @@
   }
 
   .regionName{
-    margin-bottom: 0.5em;
+    margin-bottom: 10px;
     line-height: 1.3;
   }
 
@@ -70,7 +70,7 @@
     }
 
     .updatedTime{
-      margin-top: 0.5em;
+      margin-top: 10px;
       display: inline-block;
     }
   }
@@ -97,6 +97,7 @@
 
   .imgToday{
     width: 85px;
+    height: 85px;
     transform: scale(1.25);
   }
 
