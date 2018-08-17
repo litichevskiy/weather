@@ -36,11 +36,6 @@
       z-index: -1;
       width: auto;
     }
-
-    &.disabled{
-      transition: $transition-time opacity;
-      opacity: 0;
-    }
   }
 
   .cityName{

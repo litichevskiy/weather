@@ -19,6 +19,7 @@ class SavedCities {
     this.checkKeyCode = this.checkKeyCode.bind( this );
     this.createItemList = this.createItemList.bind( this );
     pubsub.subscribe('show-saved-cities', this.showBlock);
+    pubsub.subscribe('hide-saved-cities', this.hideBlock);
     pubsub.subscribe('create-list-saved-sities', this.createItemList );
 
     new ButtonImg({
@@ -43,6 +44,7 @@ class SavedCities {
         this.activeItem = target;
         this.toggleActiveItem( this.activeItem );
         pubsub.publish('change-current-city', {id: +target.getAttribute('data-id') });
+        this.hideBlock();
       }
       else this.deleteItemList( target );
     });

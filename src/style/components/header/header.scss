@@ -1,12 +1,13 @@
 .header{
-  position: relative;
+  position: absolute;
   z-index: 1;
   height: $header-height;
   width: 100%;
+  top: 0;
+  left: 0;
   background-color: $bg-color-header;
   padding: 0 0.7em;
   box-shadow: $default-box-shadow;
-  width: 100%;
 
   .title{
     display: inline-block;
