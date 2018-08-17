@@ -6,7 +6,6 @@ const Preloader = require('./Preloader');
 const CODES = require('../utils/weatherCodes');
 const INTERVAL = 300000; // 5 min in ms
 const MAX_TIME_UPDATED = 5; // hours
-const ANIMATION_TIME = 250; //ms
 
 class WeathersList {
   constructor( data ) {
@@ -70,13 +69,7 @@ class WeathersList {
   deleteCard( isAnimation ) {
     if( this.intervalId !== undefined ) clearInterval( this.intervalId );
     if( !isAnimation ) this.container.innerHTML = '';
-
-    if( this.container.children[1] ) {
-      this.container.children[0].classList.add('disabled');
-      setTimeout(() => {
-        this.container.children[0].remove();
-      }, ANIMATION_TIME );
-    }
+    if( this.container.children[1] ) this.container.children[0].remove();
   }
 
   enabledPreload() {

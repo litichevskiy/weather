@@ -232,7 +232,10 @@ const store = {
           }
           const index = this.weatherFor.indexOf( card.geonameid );
           if( index < 0 ) console.error(`nonexistent geo name ${card}`);
-          else this.weatherFor.splice(index, 1);
+          else {
+            this.weatherFor.splice(index, 1);
+            if( !this.weatherFor.length ) pubsub.publish('hide-saved-cities');
+          }
         }
       });
     });
