@@ -6,7 +6,6 @@
   width: 100%;
   z-index: 2;
   background-color: $bg-transparent-layer;
-  overflow: auto;
   transition: $transition-time opacity;
   z-index: 2;
   opacity: 1;
@@ -50,6 +49,7 @@
     left: 0;
     bottom: 0;
     width: 100%;
+    -webkit-overflow-scrolling: touch;
     overflow: auto;
   }
 }
