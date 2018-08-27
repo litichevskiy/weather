@@ -15,6 +15,7 @@
   cursor: pointer;
   width: 25px;
   height: 25px;
+  -webkit-tap-highlight-color: transparent;
 
   &:active{
     opacity: 0.7;

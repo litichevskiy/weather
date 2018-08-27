@@ -95,6 +95,7 @@
     width: 96%;
     border-radius: 4px;
     box-shadow: $default-box-shadow;
+    -webkit-tap-highlight-color: transparent;
 
     .titleItemSettings{
       margin: 0 0 0.3em 0;

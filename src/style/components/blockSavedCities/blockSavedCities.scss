@@ -33,6 +33,7 @@
       .btnBack{
         cursor: pointer;
         @extend .inlineFlexCentered;
+        -webkit-tap-highlight-color: transparent;
       }
     }
   }
@@ -61,6 +62,7 @@
     padding: 13px 40px 13px 30px;
     cursor: pointer;
     box-shadow: 0px -1px 0px 0px #b1afaf inset;
+    -webkit-tap-highlight-color: transparent;
 
     &.active:before{
       @extend .inlineFlexCentered;
