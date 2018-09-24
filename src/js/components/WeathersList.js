@@ -4,8 +4,8 @@ const format = require('../utils/format');
 const store = require('../store');
 const Preloader = require('./Preloader');
 const CODES = require('../utils/weatherCodes');
-const INTERVAL = 300000; // 5 min in ms
-const MAX_TIME_UPDATED = 5; // hours
+const INTERVAL = 60000; // 1 min in ms
+const MAX_TIME_UPDATED = 2; // hours
 
 class WeathersList {
   constructor( data ) {
@@ -53,7 +53,7 @@ class WeathersList {
       if( time.minutes >= 1 ) {
         time = ( time.hours < 1 ) ? `${time.minutes}m ago` : `${time.hours}h ${time.minutes}m ago`;
       }
-      else time = `${time.seconds}s ago`;
+      else time = 'less than a minute ago';
     }
     else{
       clearInterval( this.intervalId );
