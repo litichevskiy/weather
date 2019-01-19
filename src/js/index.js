@@ -25,10 +25,10 @@ new SavedCities({container: document.querySelector('.blockSavedCities')} );
 
 store.initApp();
 
-if('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('./sw.js')
-  .then( response => {
-    response.update();
-  })
-  .catch(error => console.error(error) );
-}
+// if('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('./sw.js')
+//   .then( response => {
+//     response.update();
+//   })
+//   .catch(error => console.error(error) );
+// }

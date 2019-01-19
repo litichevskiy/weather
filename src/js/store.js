@@ -27,7 +27,9 @@ const store = {
       name = `${name[0]},${name[2]}`;
       weather = await serverApi.getWeather( name );
       if( !weather ) throw new Error();
-      weather = weather.query.results.channel;
+      // weather = weather.query.results.channel;
+      weather = weather.data;
+      console.log( weather )
       weather._name = name;
       weather.geonameid = geonameid;
     } catch( error ) {
@@ -191,8 +193,10 @@ const store = {
         pubsub.publish('end-load-card-weather');
         if( !response ) return showMessage('unknow');
         if( !response.item ) return showMessage('unknowCiti', response._name)
+        // if( !response.current_observation ) return showMessage('unknowCiti', response._name)
         else{
           let weatherCard = this.setWeatherCard( response );
+          // let weatherCard = this.setWeatherCard( response.current_observation );
           storage.setItem( weatherCard )
           .then( response => {
             if( !response ) showMessage('unknow');
