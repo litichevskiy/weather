@@ -61,6 +61,11 @@ const format = {
     return `${weekDay}, ${monthDay} ${month} ${year}`;
   },
 
+  formateDateForecast( ms ) {
+    const date = (new Date( ms )).toString().split(' ')
+    return `${date[0]} ${date[2]} ${date[1]} ${date[3]}`;
+  },
+
   convertMS( ms ) {
     let hours, minutes, seconds;
     seconds = Math.floor( ms / 1000 );

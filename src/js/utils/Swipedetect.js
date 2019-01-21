@@ -17,7 +17,7 @@ class Swipedetect{
       touches = event.changedTouches[0];
       startX = touches.pageX;
       startY = touches.pageY;
-    });
+    }, { passive: true });
 
     this.container.addEventListener('touchmove', ( event ) => {
       touches = event.changedTouches[0];
@@ -28,7 +28,7 @@ class Swipedetect{
       if( deltaY > 100 ) return
       if( touches.pageX > startX ) swipedMove('right', deltaX, event.target );
       else swipedMove('left', deltaX, event.target);
-    });
+    }, { passive: true });
 
     this.container.addEventListener('touchend', ( event ) => {
       touches = event.changedTouches[0];

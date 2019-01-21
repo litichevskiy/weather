@@ -1,6 +1,7 @@
 const pubsub = new ( require('./utils/pubSub') );
 const serverApi = require('./serverApi');
 const storage = require('./storage');
+const units = {distance: "mi", pressure: "in", speed: "mph", temperature: "F"};
 const errorMessages = {
   unknow() { return `Oops! \n Something went wrong. \n Please try again`},
   unknowCiti(siti) { return `Weather for "${siti}" is not available`},
@@ -27,9 +28,7 @@ const store = {
       name = `${name[0]},${name[2]}`;
       weather = await serverApi.getWeather( name );
       if( !weather ) throw new Error();
-      // weather = weather.query.results.channel;
       weather = weather.data;
-      console.log( weather )
       weather._name = name;
       weather.geonameid = geonameid;
     } catch( error ) {
@@ -48,7 +47,7 @@ const store = {
       for( let item of weatherList ) {
         response = await serverApi.getWeather( item._name );
         if( !response ) throw new Error();
-        response = response.query.results.channel;
+        response = response.data;
         response.id = item.id;
         response.geonameid = item.geonameid;
         response._name = item._name;
@@ -62,24 +61,18 @@ const store = {
   },
 
   setWeatherCard( response, num ) {
-    const {
-      astronomy,
-      atmosphere,
-      location,
-      units,
-      wind,
-      item,
-      _name,
-      geonameid
-    } = response;
-    const condition = item.condition;
+    const { _name, location, geonameid } = response;
+    const { astronomy, atmosphere, wind } = response.current_observation;
+    const condition = response.current_observation.condition;
     const id = num || createId();
     const _updated = Date.now();
-    const lastUpdate = new Date( response.lastBuildDate.match(/(.+?M)/)[0] );
-    const forecast = item.forecast.splice( 0, 6 );
+    const lastUpdate = new Date( response.current_observation.pubDate * 1000 ); //1000 because pubDate in seconds
+    const forecast = response.forecasts.splice( 0, 6 );
     return {
+      units: units,
       astronomy, atmosphere,
-      location, units ,wind, item:{ condition, forecast },
+      item:{ condition, forecast },
+      location, wind,
       lastUpdate, id, geonameid, _name, _updated
     };
   },
@@ -192,11 +185,9 @@ const store = {
       .then(response => {
         pubsub.publish('end-load-card-weather');
         if( !response ) return showMessage('unknow');
-        if( !response.item ) return showMessage('unknowCiti', response._name)
-        // if( !response.current_observation ) return showMessage('unknowCiti', response._name)
+        if( !response.current_observation ) return showMessage('unknowCiti', response._name)
         else{
           let weatherCard = this.setWeatherCard( response );
-          // let weatherCard = this.setWeatherCard( response.current_observation );
           storage.setItem( weatherCard )
           .then( response => {
             if( !response ) showMessage('unknow');

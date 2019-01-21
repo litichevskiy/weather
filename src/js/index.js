@@ -1,5 +1,5 @@
 const store = require('./store');
-const WeathersList = require('./components/WeathersList');
+const WeatherCard = require('./components/WeatherCard');
 const Header = require('./components/Header');
 const BlockSearch = require('./components/BlockSearch');
 const ListSities = require('./components/ListSities');
@@ -12,7 +12,7 @@ new BlockSearch({ container: document.querySelector('.blockSearch') });
 new Header({ container: document.querySelector('.header') });
 new ListSities({ container: document.querySelector('.listSities') });
 new Message({ container: document.querySelector('.containerMessage') });
-new WeathersList({ container: document.querySelector('.listCardWeater') });
+new WeatherCard({ container: document.querySelector('.listCardWeater') });
 new NotFound({
   container: document.querySelector('.containerNotFound'),
   eventName: 'cityes-not-found',
@@ -25,10 +25,10 @@ new SavedCities({container: document.querySelector('.blockSavedCities')} );
 
 store.initApp();
 
-// if('serviceWorker' in navigator) {
-//   navigator.serviceWorker.register('./sw.js')
-//   .then( response => {
-//     response.update();
-//   })
-//   .catch(error => console.error(error) );
-// }
+if('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('./sw.js')
+  .then( response => {
+    response.update();
+  })
+  .catch(error => console.error(error) );
+}

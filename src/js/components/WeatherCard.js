@@ -7,7 +7,7 @@ const CODES = require('../utils/weatherCodes');
 const INTERVAL = 60000; // 1 min in ms
 const MAX_TIME_UPDATED = 2; // hours
 
-class WeathersList {
+class WeatherCard {
   constructor( data ) {
     this.container = data.container;
     this.intervalId = undefined;
@@ -92,7 +92,7 @@ class WeathersList {
       todayMinMax = data.item.forecast[0];
 
       (card.querySelector('.temperatureToday'))
-      .innerHTML = format.convertTemperature(+data.item.condition.temp, temperature );
+      .innerHTML = format.convertTemperature(+data.item.condition.temperature, temperature );
       (card.querySelector('.minToday'))
       .innerHTML = format.convertTemperature(+todayMinMax.low, temperature );
       (card.querySelector('.maxToday'))
@@ -147,8 +147,7 @@ function createForecast( list, tempFormat ) {
       <li class="itemForecast">
         <div class="cellForecast">
           <div class="containerDate">
-            <span class="dayForecast">${item.day}</span>
-            <time class="dateForecast">${item.date}</time>
+            <time class="dateForecast">${format.formateDateForecast(item.date * 1000)}</time>
           </div>
           <span class="descriptionForecast">${item.text}</span>
         </div>
@@ -192,7 +191,7 @@ function templateCard( data ) {
         </div>
         <div class="blockTemperature">
           <div class="containerTemperatureToday">
-            <div class="temperatureToday monospaceNumber">${format.convertTemperature(+item.condition.temp, temperature )}</div>
+            <div class="temperatureToday monospaceNumber">${format.convertTemperature(+item.condition.temperature, temperature )}</div>
             <div class="containerMinMaxToday">
               <div class="wrapper">
                 <small>&#8595;</small>
@@ -252,4 +251,4 @@ function templateCard( data ) {
     return template;
 };
 
-module.exports = WeathersList;
+module.exports = WeatherCard;
