@@ -182,7 +182,7 @@ function templateCard( data ) {
         <div class="containerDate">
           <small class="content">${format.formateToday(date)}</small>
           <small class="content monospaceNumber">
-            <small data-time-update="time-update">${format.getCurrentTime(date, timeFormat)}</small>
+            <small data-time-update="time-update">${format.getCurrentTime(new Date(data.localTime), timeFormat)}</small>
             <small class="descriptionTime">( local time )</small>
           </small>
           <small class="updatedTime">

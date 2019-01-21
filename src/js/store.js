@@ -1,3 +1,4 @@
+const MAX_INVISIBILITY_TIME = 1500000; // ((1000 * 60) * 25) ms
 const pubsub = new ( require('./utils/pubSub') );
 const serverApi = require('./serverApi');
 const storage = require('./storage');
@@ -20,6 +21,7 @@ const store = {
   isCardWeather: undefined,
   currentCitiId: undefined,
   lastUpdateTime: undefined,
+  invisibilityTime: 0,
 
   async addNewCiti( link, name, geonameid ) {
     let city, weather;
@@ -62,7 +64,7 @@ const store = {
 
   setWeatherCard( response, num ) {
     const { _name, location, geonameid } = response;
-    const { astronomy, atmosphere, wind } = response.current_observation;
+    const { astronomy, atmosphere, wind, localTime } = response.current_observation;
     const condition = response.current_observation.condition;
     const id = num || createId();
     const _updated = Date.now();
@@ -72,7 +74,7 @@ const store = {
       units: units,
       astronomy, atmosphere,
       item:{ condition, forecast },
-      location, wind,
+      location, wind, localTime,
       lastUpdate, id, geonameid, _name, _updated
     };
   },
@@ -104,7 +106,12 @@ const store = {
 
   init() {
     document.addEventListener('visibilitychange', () => {
-      if( !document.hidden ) this.updateAllWeather();
+      if( !document.hidden ) {
+        if( Date.now() - this.invisibilityTime > MAX_INVISIBILITY_TIME ) {
+          this.updateAllWeather();
+        }
+      }
+      else this.invisibilityTime = Date.now();
     }, false);
 
     window.addEventListener('online', () => {

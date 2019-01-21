@@ -22,7 +22,7 @@ function getWeather( location ) {
       null,
       function (err, data, result) {
         if ( err ) reject( err );
-        else resolve( data );
+        else resolve( JSON.parse( data ) );
       }
     );
   });
