@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node index.js",
     "dev": "webpack & node index.js",
-    "build": "NODE_ENV=production webpack"
+    "build": "NODE_ENV=production webpack",
+    "heroku-postbuild": "echo Skip build on Heroku"
   },
   "dependencies": {
     "compression": "^1.7.3",
@@ -38,5 +39,6 @@
     "uglifyjs-webpack-plugin": "^1.2.7",
     "url-loader": "^1.0.1",
     "webpack": "3.5.5"
-  }
+  },
+  "heroku-run-build-script": true
 }
