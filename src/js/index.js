@@ -9,6 +9,7 @@ const Menu = require('./components/Menu');
 const SavedCities = require('./components/SavedCities');
 
 
+
 new BlockSearch({ container: document.querySelector('.blockSearch') });
 new Header({ container: document.querySelector('.header') });
 new ListSities({ container: document.querySelector('.listSities') });
