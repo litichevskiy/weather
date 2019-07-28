@@ -1,6 +1,5 @@
 /node_modules
 /certificate
-/dist
 .tern-project
 Procfile
 *.map
