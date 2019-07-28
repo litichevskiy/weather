@@ -1,8 +1,9 @@
-const CACHE_NAME = ['v-3-1549311314812'];
+const CACHE_NAME = ['v-3-1564343854209'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
   '/dist/js/bundle.js',
+  '/dist/vendors/vendors.js',
   '/dist/css/bundle.css',
   '/images/weather/clear.png',
   '/images/weather/cloudy.png',

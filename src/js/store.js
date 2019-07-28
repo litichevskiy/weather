@@ -1,4 +1,4 @@
-const MAX_INVISIBILITY_TIME = 1500000; // ((1000 * 60) * 25) ms
+const LAST_UPDATE_TIME = 1800000; // ((1000 * 60) * 30) 30 min in ms
 const pubsub = new ( require('./utils/pubSub') );
 const serverApi = require('./serverApi');
 const storage = require('./storage');
@@ -40,26 +40,27 @@ const store = {
     return weather;
   },
 
-  async updateWeatherCities() {
-    let weatherList, response, result = [];
+  async getWeatherForCity() {
+    let weatherList, response;
     try{
       weatherList = await storage.getStorage();
       if( !weatherList ) throw new Error();
       weatherList = weatherList.listWeather;
-      for( let item of weatherList ) {
-        response = await serverApi.getWeather( item._name );
-        if( !response ) throw new Error();
-        response = response.data;
-        response.id = item.id;
-        response.geonameid = item.geonameid;
-        response._name = item._name;
-        result.push( response );
-      }
+
+      const itemWeather = getItemWeatherByKey( weatherList, 'id', this.currentCitiId );
+      response = await serverApi.getWeather( itemWeather._name );
+      if( !response ) throw new Error();
+
+      response = response.data;
+      response.id = itemWeather.id;
+      response.geonameid = itemWeather.geonameid;
+      response._name = itemWeather._name;
+
     } catch( error ) {
       console.error( error );
-      result = false;
+      response = false;
     }
-    return result;
+    return response;
   },
 
   setWeatherCard( response, num ) {
@@ -107,8 +108,8 @@ const store = {
   init() {
     document.addEventListener('visibilitychange', () => {
       if( !document.hidden ) {
-        if( Date.now() - this.invisibilityTime > MAX_INVISIBILITY_TIME ) {
-          this.updateAllWeather();
+        if( Date.now() - this.invisibilityTime > LAST_UPDATE_TIME ) {
+          this.updateWeather();
         }
       }
       else this.invisibilityTime = Date.now();
@@ -210,8 +211,8 @@ const store = {
       });
     });
 
-    pubsub.subscribe('update-all-weather-card', () => {
-      this.updateAllWeather();
+    pubsub.subscribe('update-weather-card', () => {
+      this.updateWeather();
     });
 
     pubsub.subscribe('input-searh-cleared', () => {
@@ -233,7 +234,7 @@ const store = {
             pubsub.publish('delete-weather-card');
           }
           const index = this.weatherFor.indexOf( card.geonameid );
-          if( index < 0 ) console.error(`nonexistent geo name ${card}`);
+          if( index < 0 ) console.error(`non-existent geographical name ${card}`);
           else {
             this.weatherFor.splice(index, 1);
             if( !this.weatherFor.length ) pubsub.publish('hide-saved-cities');
@@ -276,42 +277,49 @@ const store = {
         showMessage('unknow');
       }
       if( this.currentCitiId === id ) return;
-      storage.setCurrentSity( id )
+      this.setNewCity( id );
+    });
+
+    pubsub.subscribe('saved-cityes-closed', () => {
+      if( this.currentCitiId ) return;
+      storage.getStorage()
       .then( response => {
-        if( !response ) showMessage('unknow');
-        this.currentCitiId = response.id;
-        this.lastUpdateTime = response.city._updated;
-        pubsub.publish('create-card-weater', response.city );
-      });
+        const city = response.listWeather[0];
+        if( city ) this.setNewCity( city.id );
+      })
     });
   },
 
-  updateAllWeather() {
+  setNewCity( id ) {
+    storage.setCurrentSity( id )
+    .then( response => {
+      if( !response ) showMessage('unknow');
+      this.currentCitiId = response.id;
+      this.lastUpdateTime = response.city._updated;
+      pubsub.publish('create-card-weater', response.city );
+      const isUpdate = isTimeToUpdate( this.lastUpdateTime );
+      if( isUpdate ) this.updateWeather();
+    });
+  },
+
+  updateWeather() {
     if( !this.onlineStatus ) return showMessage('offline');
-    pubsub.publish('start-updated-all-weather-card');
-    this.updateWeatherCities()
+    pubsub.publish('start-updated-weather-card');
+    this.getWeatherForCity()
     .then( response => {
       if( !response ) {
-        pubsub.publish('end-updated-all-weather-card');
+        pubsub.publish('end-updated-weather-card');
         return showMessage('unknow');
       }
       else{
-        response = response.map( item => {
-          return this.setWeatherCard( item, item.id );
-        })
-        storage.updateAllWeather( response )
+        response = this.setWeatherCard( response, response.id );
+        storage.updateItemWeather( response )
         .then( response => {
           if( !response ) return showMessage('unknow');
-          response.some( item => {
-            if( item.id === this.currentCitiId ) {
-                this.lastUpdateTime = item._updated;
-                pubsub.publish('update-card-weater', item );
-                return true;
-            }
-            else return false;
-          });
+          this.lastUpdateTime = response._updated;
+          pubsub.publish('update-card-weater', response );
         })
-        pubsub.publish('end-updated-all-weather-card');
+        pubsub.publish('end-updated-weather-card');
       }
     });
   },
@@ -327,7 +335,6 @@ const store = {
   initApp() {
     storage.init( this.settings )
     .then( response => {
-      if( !response ) return alert("your browser is not supported");
       const { settings, listWeather } = response;
       this.settings = settings;
       this.weatherFor = listWeather.map(item => item.geonameid);
@@ -341,17 +348,12 @@ const store = {
         }
       }
       pubsub.publish('create-list-saved-sities', listWeather );
-
-      listWeather.some( item => {
-        if( item.id === this.currentCitiId ) {
-          this.lastUpdateTime = item._updated;
-          pubsub.publish('create-card-weater', item );
-          return true;
-        }
-        else return false;
-      })
+      const itemWeather = getItemWeatherByKey( listWeather, 'id', this.currentCitiId );
+      this.lastUpdateTime = itemWeather._updated;
+      pubsub.publish('create-card-weater', itemWeather );
       pubsub.publish('set-current-settings', {settings: settings});
-      this.updateAllWeather();
+      const isUpdate = isTimeToUpdate( this.lastUpdateTime );
+      if( isUpdate ) this.updateWeather();
     });
   }
 };
@@ -363,6 +365,16 @@ const showMessage = ( key, message ) => {
   else pubsub.publish('show-message', { message: errorMessages[key]() });
 };
 const createId = () => Date.now();
+
 const getGeonameId = (str) => str.match(/geonameid:(\d{1,})\//)[1];
+
+const getItemWeatherByKey = ( list, key, id ) => {
+  return list.reduce(( itemWeather, item ) => {
+    if( item[key] === id ) itemWeather = item;
+    return itemWeather;
+  }, {});
+};
+
+const isTimeToUpdate = ( ms ) => ( Date.now() - ms ) > LAST_UPDATE_TIME;
 
 module.exports = store;

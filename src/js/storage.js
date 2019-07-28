@@ -22,18 +22,23 @@ module.exports = {
     .catch(error => console.log( error ));
   },
 
-  async updateAllWeather( list ) {
-    let response, index;
+  async updateItemWeather( newWeather ) {
+    let response;
     try{
       response = await this.getStorage();
-      response.listWeather = list;
+
+      response.listWeather = response.listWeather.map( item => {
+        if ( item.id === newWeather.id ) item = newWeather;
+        return item;
+      });
+
       response = await localforage.setItem( STORAGE_NAME, response );
       if( !response ) throw new Error('unknown error');
     } catch( error ) {
       console.error( error );
       response = false;
     }
-    return ( response ) ? response.listWeather : response;
+    return ( response ) ? newWeather : response;
   },
 
   async deleteItem( id ) {

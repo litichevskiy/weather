@@ -4,6 +4,10 @@
   justify-content: center;
 }
 
+.link{
+  position: relative;
+}
+
 .inlineFlexCentered{
   display: inline-flex;
   align-items: center;
@@ -11,11 +15,17 @@
 }
 
 .defaultBtn{
-  user-select: none;
   cursor: pointer;
-  width: 25px;
-  height: 25px;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  width: 2rem;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   -webkit-tap-highlight-color: transparent;
+  outline: none;
 
   &:active{
     opacity: 0.7;
@@ -25,6 +35,25 @@
 .monospaceNumber{
   font-family: sans-serif;
   font-variant-numeric: tabular-nums;
+}
+
+.checkbox{
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  background-color: #26272b;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY( -50% );
+
+  &.radio{
+    border-radius: 50%;
+  }
+}
+
+input:checked ~ .radio{
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' height='20px' width='20px' viewBox='0 0 512 512'%3E%3Cpath fill='%2326272b' d='m256 0c-141.164062 0-256 114.835938-256 256s114.835938 256 256 256 256-114.835938 256-256-114.835938-256-256-256zm0 0'/%3E%3Cpath fill='%23FFFFFF' d='m385.75 201.75-138.667969 138.664062c-4.160156 4.160157-9.621093 6.253907-15.082031 6.253907s-10.921875-2.09375-15.082031-6.253907l-69.332031-69.332031c-8.34375-8.339843-8.34375-21.824219 0-30.164062 8.339843-8.34375 21.820312-8.34375 30.164062 0l54.25 54.25 123.585938-123.582031c8.339843-8.34375 21.820312-8.34375 30.164062 0 8.339844 8.339843 8.339844 21.820312 0 30.164062zm0 0'/%3E%3C/svg%3E");
 }
 
 @keyframes circle {

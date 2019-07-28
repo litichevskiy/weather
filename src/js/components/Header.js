@@ -9,8 +9,8 @@ class Header {
     this.updateCard = this.updateCard.bind( this );
     this.startUpdated = this.startUpdated.bind( this );
     this.savedCities = this.savedCities.bind( this );
-    pubsub.subscribe('end-updated-all-weather-card', this.cancelUpdated);
-    pubsub.subscribe('start-updated-all-weather-card', this.startUpdated);
+    pubsub.subscribe('end-updated-weather-card', this.cancelUpdated);
+    pubsub.subscribe('start-updated-weather-card', this.startUpdated);
     new ButtonImg({
       parent: this.container.querySelector('.btnMenu'),
       name: 'settings',
@@ -46,7 +46,7 @@ class Header {
   }
 
   updateCard( event ) {
-    pubsub.publish('update-all-weather-card');
+    pubsub.publish('update-weather-card');
   }
 
   cancelUpdated() {

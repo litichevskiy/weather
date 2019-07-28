@@ -22,7 +22,7 @@
 
   .containerSearch{
     @extend .flexCentered;
-    padding: 0 0.6em;
+    padding: 0 0.7em;
     background-color: $bg-color-header;
     position: relative;
     height: $header-height;
@@ -31,7 +31,7 @@
   .wrapper{
     @extend .inlineFlexCentered;
     position: absolute;
-    right: 0.6em;
+    right: 0.7em;
     top: 0;
     height: 100%;
 

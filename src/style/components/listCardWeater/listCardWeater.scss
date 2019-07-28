@@ -58,7 +58,8 @@
 
     .content{
       display: block;
-      line-height: 1.4;
+      line-height: 1.35;
+      font-size: 18px;
     }
 
     .descriptionTime{
@@ -66,8 +67,13 @@
     }
 
     .updatedTime{
-      margin-top: 10px;
+      margin-top: 8px;
       display: inline-block;
+      font-size: 17px;
+    }
+
+    .time{
+      font-size: 17px;
     }
   }
 
@@ -143,7 +149,7 @@
     @extend .flexCentered;
     margin: 0.2em 0;
     padding: 0.3em 0;
-    font-size: 0.9em;
+    font-size: 1em;
     border-bottom: 1px dotted #bdbbbb;
     justify-content: space-between;
 

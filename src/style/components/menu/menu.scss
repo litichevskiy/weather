@@ -53,6 +53,9 @@
     position: relative;
     height: $header-height;
     box-shadow: $default-box-shadow;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 
   .wrapperSettings{
@@ -63,12 +66,11 @@
     width: 100%;
     -webkit-overflow-scrolling: touch;
     overflow: auto;
+    outline: none;
   }
 
   .poweredby{
     @extend .inlineFlexCentered;
-    float: left;
-    height: 100%;
   }
 
   .containerSettings{
@@ -83,9 +85,6 @@
   .cancel{
     @extend .defaultBtn;
     @extend .inlineFlexCentered;
-    width: 30px;
-    float: right;
-    height: 100%;
   }
 
   .itemSettings{
@@ -109,22 +108,19 @@
       margin-bottom: 0.4em;
       font-size: 1.1em;
       padding-left: 1.3em;
+      position: relative;
 
       input{
-        display: none;
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0 0 0 0);
       }
 
       .selectItem{
         width: 100%;
         display: inline-block;
-        position: relative;
-      }
-
-      input:checked ~ .selectItem:before{
-        content: '✓';
-        position: absolute;
-        left: -1.2em;
-        top: 0;
       }
     }
   }

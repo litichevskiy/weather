@@ -39,7 +39,7 @@
       <section class="containerMenu">
         <div class="swipeContainer">
           <header class="headerMenu">
-            <a class="poweredby" rel="noopener" href="https://www.yahoo.com/?ilc=401" target="_blank">
+            <a class="poweredby link" rel="noopener" href="https://www.yahoo.com/?ilc=401" target="_blank">
               <img src = "./images/poweredby.png" alt="powered by yahoo" />
             </a>
           </header>
@@ -51,10 +51,12 @@
                 <label class="select">
                   <input type="radio" name="temperature" value="f" />
                   <span class="selectItem">Fahrenheit scale: °F</span>
+                  <span class="checkbox radio"></span>
                 </label>
                 <label class="select">
                   <input type="radio" name="temperature" value="c" />
                   <span class="selectItem">Celsius scale: °C</span>
+                  <span class="checkbox radio"></span>
                 </label>
               </div>
               <div class="itemSettings">
@@ -62,10 +64,12 @@
                 <label class="select">
                   <input type="radio" name="speed" value="km" />
                   <span class="selectItem">Km/h</span>
+                  <span class="checkbox radio"></span>
                 </label>
                 <label class="select">
                   <input type="radio" name="speed" value="m" />
                   <span class="selectItem">M/h</span>
+                  <span class="checkbox radio"></span>
                 </label>
               </div>
               <div class="itemSettings">
@@ -73,10 +77,12 @@
                 <label class="select">
                   <input type="radio" name="timeFormat" value="24" />
                   <span class="selectItem">24-hour</span>
+                  <span class="checkbox radio"></span>
                 </label>
                 <label class="select">
                   <input type="radio" name="timeFormat" value="12" />
                   <span class="selectItem">12-hour</span>
+                  <span class="checkbox radio"></span>
                 </label>
               </div>
              </div>
@@ -107,6 +113,7 @@
         <ul class="listCardWeater"></ul>
       </main>
     </div>
-    <script type="text/javascript" src="dist/js/bundle.js"></script>
+    <script src="dist/vendors/vendors.js"></script>
+    <script src="dist/js/bundle.js"></script>
   </body>
 </html>

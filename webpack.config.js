@@ -17,7 +17,16 @@ module.exports = [
     watch: !IS_PRODUCTION,
   },
   {
-    entry: ['babel-polyfill', './src/js/index.js', './src/style/index.scss'],
+    entry: ['babel-polyfill'],
+    output: {
+      path: path.resolve(__dirname, './dist/vendors'),
+      filename: 'vendors.js',
+    },
+    plugins:[],
+    watch: !IS_PRODUCTION,
+  },
+  {
+    entry: ['./src/js/index.js', './src/style/index.scss'],
     output: {
       path: path.resolve(__dirname, './dist/js'),
       filename: 'bundle.js',
@@ -41,7 +50,7 @@ module.exports = [
           use: {
               loader: 'babel-loader',
               options: {
-                  presets: ['es2015', 'stage-0','env']
+                  presets: ['es2015', 'stage-0', 'env']
               }
           }
         },
@@ -96,7 +105,6 @@ module.exports = [
     }
   }
 ];
-
 
 if( IS_PRODUCTION ) {
   module.exports.forEach( item => {

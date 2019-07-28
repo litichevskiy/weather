@@ -30,9 +30,12 @@
   }
 
   .updateCard{
-    transition: 1s;
 
-    &.activeUpdate{
+    svg{
+      transition: 1s;
+    }
+
+    &.activeUpdate svg{
       animation: circle 1s infinite linear;
     }
   }
