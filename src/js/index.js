@@ -17,10 +17,12 @@ new NotFound({
   container: document.querySelector('.containerNotFound'),
   eventName: 'cityes-not-found',
 });
+
 new Menu({
   container: document.querySelector('.containerMenu'),
   form: document.querySelector('.containerSettings'),
 });
+
 new SavedCities({container: document.querySelector('.blockSavedCities')} );
 
 store.initApp();
