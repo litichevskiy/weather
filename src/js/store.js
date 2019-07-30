@@ -27,7 +27,7 @@ const store = {
     let city, weather;
     try{
       name = name.split(',');
-      name = `${name[0]},${name[2]}`;
+      name = `${name[0]},${name[2] || name[1]}`;
       weather = await serverApi.getWeather( name );
       if( !weather ) throw new Error();
       weather = weather.data;
@@ -193,7 +193,11 @@ const store = {
       .then(response => {
         pubsub.publish('end-load-card-weather');
         if( !response ) return showMessage('unknow');
-        if( !response.current_observation ) return showMessage('unknowCiti', response._name)
+        if( !response.current_observation ) {
+          showMessage('unknowCiti', response._name);
+          pubsub.publish('show-block-search');
+          if( this.currentCitiId ) this.setNewCity( this.currentCitiId );
+        }
         else{
           let weatherCard = this.setWeatherCard( response );
           storage.setItem( weatherCard )
@@ -342,18 +346,17 @@ const store = {
       this.showHidePulsing( this.isCardWeather );
 
       if( response.currentSity ) this.currentCitiId = response.currentSity;
-      else{
-        if ( listWeather.length > 0 ) {
-          this.currentCitiId = listWeather[listWeather.length-1].id
-        }
+      if ( listWeather.length > 0 ) {
+        this.currentCitiId = listWeather[listWeather.length-1].id
+
+        pubsub.publish('create-list-saved-sities', listWeather );
+        const itemWeather = getItemWeatherByKey( listWeather, 'id', this.currentCitiId );
+        this.lastUpdateTime = itemWeather._updated;
+        pubsub.publish('create-card-weater', itemWeather );
+        const isUpdate = isTimeToUpdate( this.lastUpdateTime );
+        if( isUpdate ) this.updateWeather();
       }
-      pubsub.publish('create-list-saved-sities', listWeather );
-      const itemWeather = getItemWeatherByKey( listWeather, 'id', this.currentCitiId );
-      this.lastUpdateTime = itemWeather._updated;
-      pubsub.publish('create-card-weater', itemWeather );
       pubsub.publish('set-current-settings', {settings: settings});
-      const isUpdate = isTimeToUpdate( this.lastUpdateTime );
-      if( isUpdate ) this.updateWeather();
     });
   }
 };

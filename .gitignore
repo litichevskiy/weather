@@ -1,5 +1,6 @@
 /node_modules
 /certificate
+/src/images/old-weather-icon
 .tern-project
 Procfile
 *.map
