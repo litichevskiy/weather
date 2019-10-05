@@ -48,6 +48,10 @@ class SavedCities {
       }
       else this.deleteItemList( target );
     });
+
+    if( 'ontouchstart' in document || 'ontouchstart' in window ) {
+      this.listSities.classList.add('touch-detected')
+    }
   }
 
   deleteItemList( target ) {

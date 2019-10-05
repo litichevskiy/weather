@@ -63,6 +63,9 @@
     cursor: pointer;
     box-shadow: 0px -1px 0px 0px #b1afaf inset;
     -webkit-tap-highlight-color: transparent;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
 
     &.active:before{
       @extend .inlineFlexCentered;

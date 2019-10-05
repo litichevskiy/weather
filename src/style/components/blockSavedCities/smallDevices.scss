@@ -1,3 +1,19 @@
+@media (max-width: 960px) {
+  .blockSavedCities{
+
+    .touch-detected{
+
+      .wrapperBtnDel{
+        display: none;
+      }
+    }
+
+    .itemListSavedCities{
+      padding: 15px 10px 15px 30px;
+    }
+  }
+}
+
 @media (max-width: 750px) {
   .blockSavedCities{
 

@@ -340,6 +340,7 @@ const store = {
     storage.init( this.settings )
     .then( response => {
       const { settings, listWeather } = response;
+
       this.settings = settings;
       this.weatherFor = listWeather.map(item => item.geonameid);
       this.isCardWeather = ( listWeather.length > 0 ) ? true : false;
@@ -347,7 +348,6 @@ const store = {
 
       if( response.currentSity ) this.currentCitiId = response.currentSity;
       if ( listWeather.length > 0 ) {
-        this.currentCitiId = listWeather[listWeather.length-1].id
 
         pubsub.publish('create-list-saved-sities', listWeather );
         const itemWeather = getItemWeatherByKey( listWeather, 'id', this.currentCitiId );
