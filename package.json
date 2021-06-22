@@ -14,6 +14,7 @@
     "express": "^4.17.1",
     "heroku-ssl-redirect": "0.0.4",
     "node-fetch": "^2.6.1",
+    "country-reverse-geocoding": "^0.2.2",
     "webpack": "3.5.5"
   },
   "devDependencies": {
@@ -28,7 +29,6 @@
     "babel-preset-stage-0": "^6.24.1",
     "babel-regenerator-runtime": "^6.5.0",
     "cors": "^2.8.5",
-    "country-reverse-geocoding": "^0.2.2",
     "css-loader": "^0.28.7",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.11",
