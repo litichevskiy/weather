@@ -4,7 +4,7 @@ const serverApi = require('./serverApi');
 const storage = require('./storage');
 const units = {distance: "mi", pressure: "in", speed: "mph", temperature: "F"};
 const errorMessages = {
-  unknow() { return `Oops! \n Something went wrong. \n Please try again`},
+  unknow( msg ) { return msg || `Oops! \n Something went wrong. \n Please try again`},
   unknowCiti(siti) { return `Weather for "${siti}" is not available`},
   weatherAdded(siti) {return `Weather for "${siti}" already exists`},
   offline() {return `Connection state: \n offline`},
@@ -29,7 +29,11 @@ const store = {
       name = name.split(',');
       name = `${name[0]},${name[2] || name[1]}`;
       weather = await serverApi.getWeather( name );
-      if( !weather ) throw new Error();
+
+      if( !weather.status ) {
+        showMessage('unknow', weather.message );
+        throw new Error( weather.message );
+      }
       weather = weather.data;
       weather._name = name;
       weather.geonameid = geonameid;
@@ -49,7 +53,11 @@ const store = {
 
       const itemWeather = getItemWeatherByKey( weatherList, 'id', this.currentCitiId );
       response = await serverApi.getWeather( itemWeather._name );
-      if( !response ) throw new Error();
+
+      if( !response.status ) {
+        showMessage('unknow', response.message );
+        throw new Error( response.message );
+      }
 
       response = response.data;
       response.id = itemWeather.id;
@@ -70,7 +78,7 @@ const store = {
     const id = num || createId();
     const _updated = Date.now();
     const lastUpdate = new Date( response.current_observation.pubDate * 1000 ); //1000 because pubDate in seconds
-    const forecast = response.forecasts.splice( 0, 6 );
+    const forecast = response.forecasts;
     return {
       units: units,
       astronomy, atmosphere,
@@ -106,14 +114,14 @@ const store = {
   },
 
   init() {
-    document.addEventListener('visibilitychange', () => {
-      if( !document.hidden ) {
-        if( Date.now() - this.invisibilityTime > LAST_UPDATE_TIME ) {
-          this.updateWeather();
-        }
-      }
-      else this.invisibilityTime = Date.now();
-    }, false);
+    // document.addEventListener('visibilitychange', () => {
+    //   if( !document.hidden ) {
+    //     if( Date.now() - this.invisibilityTime > LAST_UPDATE_TIME ) {
+    //       this.updateWeather();
+    //     }
+    //   }
+    //   else this.invisibilityTime = Date.now();
+    // }, false);
 
     window.addEventListener('online', () => {
       this.onlineStatus = true;
@@ -192,7 +200,7 @@ const store = {
       this.addNewCiti( link, fullName, geoId )
       .then(response => {
         pubsub.publish('end-load-card-weather');
-        if( !response ) return showMessage('unknow');
+        if( !response ) return showMessage('unknow' );
         if( !response.current_observation ) {
           showMessage('unknowCiti', response._name);
           pubsub.publish('show-block-search');
@@ -313,7 +321,7 @@ const store = {
     .then( response => {
       if( !response ) {
         pubsub.publish('end-updated-weather-card');
-        return showMessage('unknow');
+        return showMessage('unknow' );
       }
       else{
         response = this.setWeatherCard( response, response.id );

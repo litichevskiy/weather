@@ -113,7 +113,7 @@ class WeatherCard {
     list.forEach( data => {
       card = this.container.querySelector(`[data-id="${data.id}"]`);
       (card.querySelector('.visibility'))
-      .innerHTML = format.getWindStrength(data.atmosphere.visibility, speed, '');
+      .innerHTML = (!data.atmosphere.visibility) ? 'n/d' : format.getWindStrength(data.atmosphere.visibility, speed, '');
       (card.querySelector('.wind'))
       .innerHTML = format.getWindStrength(data.wind.speed, speed, '/h');
     });
@@ -124,9 +124,8 @@ class WeatherCard {
     const timeFormat = store.settings.timeFormat;
     list.forEach( data => {
       card = this.container.querySelector(`[data-id="${data.id}"]`);
-
       (card.querySelector(`[data-time-update="time-update"]`))
-      .innerHTML = format.getCurrentTime( data.lastUpdate, timeFormat );
+      .innerHTML = format.getCurrentTime( new Date(data.localTime), timeFormat );
       (card.querySelector('.sunrise'))
       .innerHTML = format.getTimeSunriseSunset(data.astronomy.sunrise, timeFormat, 'am' );
       (card.querySelector('.sunset'))
@@ -143,6 +142,8 @@ function getRising( num ) {
 
 function createForecast( list, tempFormat ) {
   return list.reduce(( previousValue, item ) => {
+
+    const src = CODES[item.code];
     return previousValue + `
       <li class="itemForecast">
         <div class="cellForecast">
@@ -152,7 +153,7 @@ function createForecast( list, tempFormat ) {
           <span class="descriptionForecast">${item.text}</span>
         </div>
         <div class="cellForecast">
-          <img class="imgForecast" src="images/weather/${CODES[item.code]}.png" alt=""/>
+          <img class="imgForecast" src="images/weather/${src}.png" alt="${src}"/>
           <div class="containerMinMax">
             <div class="maxTemperature">
               <span class="minIcon monospaceNumber">&#8595;</span>
@@ -174,6 +175,7 @@ function templateCard( data ) {
   const { temperature, speed, timeFormat } = store.settings;
   const forecast = item.forecast.slice(1,);
   const todayMinMax = item.forecast[0];
+  const src = CODES[item.condition.code];
   const template =
       `<div class="row">
         <div class="cell">
@@ -204,7 +206,7 @@ function templateCard( data ) {
             </div>
           </div>
           <div class="condition">
-            <img class="imgToday" src="images/weather/${CODES[item.condition.code]}.png" alt="" />
+            <img class="imgToday" src="images/weather/${src}.png" alt="${src}" />
             <div>${item.condition.text}</div>
           </div>
         </div>
@@ -217,13 +219,15 @@ function templateCard( data ) {
           <div class="content">
             <span class="title">pressure</span>
             <span class="pressure monospaceNumber">
-              ${atmosphere.pressure}
+              ${atmosphere.pressure.toFixed( 0 )}
               mbar ${getRising(+atmosphere.rising)}
             </span>
           </div>
           <div class="content">
             <span class="title">visibility</span>
-            <span class="visibility monospaceNumber">${format.getWindStrength(atmosphere.visibility, speed, '')}</span>
+            <span class="visibility monospaceNumber">${
+              (!atmosphere.visibility) ? 'n/d' : format.getWindStrength(atmosphere.visibility, speed, '')
+            }</span>
           </div>
           <div class="content">
             <span class="title">wind</span>

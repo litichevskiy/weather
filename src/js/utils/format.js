@@ -1,7 +1,7 @@
 const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MONTH = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DIRECTION_WIND = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"];
-const MILE = 0.621371; // 1 km in miles
+const MILE = 2.094; // 1 km in miles
 
 const format = {
   getCurrentTime( date, format ) {
@@ -39,13 +39,13 @@ const format = {
   },
 
   convertTemperature( deg, prefix ) {
-    if( prefix === 'c' ) return (( deg - 32 ) / 1.8).toFixed( 0 ) + ' °C';
-    else return deg + ' °F'
+    if( prefix === 'c' ) return deg.toFixed( 0 ) + ' °C';
+    else return ( ( deg * 9 / 5 ) + 32 ).toFixed( 0 ) + ' °F';
   },
 
   getWindStrength( windSpeed, prefix, inHours ) {
-    if( prefix === 'km' ) return `${windSpeed} km${inHours}`;
-    else return `${(+windSpeed * MILE).toFixed(1)} m${inHours}`;
+    if( prefix === 'km' ) return `${( windSpeed * 3.6 ).toFixed(1)} km${inHours}`;
+    else return `${(+windSpeed * MILE).toFixed(1)} mi${inHours}`;
   },
 
   getDirectionWind( num ) {

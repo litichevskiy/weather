@@ -24,17 +24,19 @@ app.get('/', (req,res) => {
 app.get('/get-weather', ( req, res ) => {
   const location = req.query.location;
   if ( !location ) res.status(400).send(`Parameter 'location' can not be empty`);
-    getWeather( location )
-    .then( response => {
+  getWeather( location )
+  .then( response => {
+    if( response.current_observation ) {
       response.current_observation.localTime = new Date().toLocaleString(
         'en-US', {timeZone: `${response.location.timezone_id}`}
       );
-      WEATHER = response;
-      res.send({ status: 'ok', data: response });
-    })
-    .catch(error => {
-      res.send({status: '', data: error });
-    })
+    }
+
+    res.send({ status: 'ok', data: response });
+  })
+  .catch(error => {
+    res.send({status: '', message: error });
+  });
 });
 
 app.listen( PORT, () => console.log(`server listening on port ${PORT}`));
