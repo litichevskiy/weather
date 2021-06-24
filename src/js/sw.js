@@ -1,4 +1,4 @@
-const CACHE_NAME = ['v-4-1624391249492'];
+const CACHE_NAME = ['v-4-1624557353509'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
@@ -24,9 +24,9 @@ const FILES_TO_CACHE = [
   '/images/weather/smoke.png',
   '/images/weather/snow-shower.png',
   '/images/weather/snow.png',
+  '/images/weather/thunderstorm-with-rain.png',
   '/images/favicon.ico',
   '/images/icons/icon-144x144.png',
-  '/images/weather/thunderstorm-with-rain.png',
   '/dist/fonts/MjQGmil5tffhpBrknsqsfamD.woff2',
   '/dist/fonts/MjQGmil5tffhpBrkntGsfamD.woff2',
   '/dist/fonts/MjQGmil5tffhpBrknt6sfQ.woff2',

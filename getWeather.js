@@ -9,7 +9,7 @@ const crg = require('country-reverse-geocoding').country_reverse_geocoding();
 
 const API_KEY = '7c0a91352708446eb11afe87c8d4ca6c';
 const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily';
-const FORECASTS_DAYS = 5;
+const FORECASTS_DAYS = 6;
 const DEFAULT_QUERY_PARAM = `?key=${API_KEY}&days=${FORECASTS_DAYS}`;
 
 const getWeather = ( query ) => {
