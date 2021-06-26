@@ -13,28 +13,10 @@ const format = {
       return `${hours}:${minutes}`;
     }
     else{
-      let amPm = ( hours > 11 ) ? 'PM' : 'AM';
+      let amPm = ( hours > 11 ) ? 'pm' : 'am';
       if( hours > 12 ) hours -= 12;
       else if( hours === 0 ) hours = '12';
       return `${hours}:${minutes} ${amPm}`;
-    }
-  },
-
-  getTimeSunriseSunset( str, format, prefix ) {
-    let minutes;
-    let hours;
-    minutes = str.match(/:(\d{1,2})/)[1];
-    minutes = isAddZero( +minutes );
-
-    if( format === '12' ) {
-      hours = str.match(/(\d{1,2}):/)[1];
-      return `${hours}:${minutes} ${prefix}`;
-    }
-    else{
-      hours = str.match(/(\d{1,2}):/)[1];
-      if( prefix === 'am' ) hours = isAddZero( +hours );
-      else hours = +hours + 12;
-      return `${hours}:${minutes}`;
     }
   },
 

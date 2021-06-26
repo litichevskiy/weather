@@ -123,13 +123,14 @@ class WeatherCard {
     let card;
     const timeFormat = store.settings.timeFormat;
     list.forEach( data => {
+      const { sunrise, sunset } = data.astronomy;
       card = this.container.querySelector(`[data-id="${data.id}"]`);
       (card.querySelector(`[data-time-update="time-update"]`))
       .innerHTML = format.getCurrentTime( new Date(data.localTime), timeFormat );
       (card.querySelector('.sunrise'))
-      .innerHTML = format.getTimeSunriseSunset(data.astronomy.sunrise, timeFormat, 'am' );
+      .innerHTML = format.getCurrentTime( new Date( sunrise * 1000 ), timeFormat );
       (card.querySelector('.sunset'))
-      .innerHTML = format.getTimeSunriseSunset(data.astronomy.sunset, timeFormat, 'pm' );
+      .innerHTML = format.getCurrentTime(new Date( sunset * 1000 ), timeFormat );
     });
   }
 };
@@ -171,6 +172,7 @@ function createForecast( list, tempFormat ) {
 
 function templateCard( data ) {
   const { location, item, atmosphere, wind, astronomy } = data;
+  const { sunrise, sunset } = astronomy;
   const date =  data.lastUpdate;
   const { temperature, speed, timeFormat } = store.settings;
   const forecast = item.forecast.slice(1,);
@@ -184,7 +186,9 @@ function templateCard( data ) {
         <div class="containerDate">
           <small class="content">${format.formateToday(date)}</small>
           <small class="content monospaceNumber">
-            <small data-time-update="time-update">${format.getCurrentTime(new Date(data.localTime), timeFormat)}</small>
+            <small data-time-update="time-update">
+              ${format.getCurrentTime(new Date(data.localTime), timeFormat)}
+            </small>
             <small class="descriptionTime">( local time )</small>
           </small>
           <small class="updatedTime">
@@ -193,15 +197,21 @@ function templateCard( data ) {
         </div>
         <div class="blockTemperature">
           <div class="containerTemperatureToday">
-            <div class="temperatureToday monospaceNumber">${format.convertTemperature(+item.condition.temperature, temperature )}</div>
+            <div class="temperatureToday monospaceNumber">
+              ${format.convertTemperature(+item.condition.temperature, temperature )}
+            </div>
             <div class="containerMinMaxToday">
               <div class="wrapper">
                 <small>&#8595;</small>
-                <span class="minToday monospaceNumber">${format.convertTemperature(+todayMinMax.low, temperature)}</span>
+                <span class="minToday monospaceNumber">
+                  ${format.convertTemperature(+todayMinMax.low, temperature)}
+                </span>
               </div>
               <div class="wrapper">
                 <small>&#8593;</small>
-                <span class="maxToday monospaceNumber">${format.convertTemperature(+todayMinMax.high, temperature)}</span>
+                <span class="maxToday monospaceNumber">
+                  ${format.convertTemperature(+todayMinMax.high, temperature)}
+                </span>
               </div>
             </div>
           </div>
@@ -236,11 +246,15 @@ function templateCard( data ) {
           </div>
           <div class="content">
             <span class="title">sunrise</span>
-            <span class="sunrise monospaceNumber">${format.getTimeSunriseSunset(astronomy.sunrise, timeFormat, 'am')}</span>
+            <span class="sunrise monospaceNumber">
+              ${format.getCurrentTime( new Date( sunrise * 1000 ), timeFormat )}
+            </span>
           </div>
           <div class="content">
             <span class="title">sunset</span>
-            <span class="sunset monospaceNumber">${format.getTimeSunriseSunset(astronomy.sunset, timeFormat, 'pm')}</span>
+            <span class="sunset monospaceNumber">
+              ${format.getCurrentTime( new Date( sunset * 1000 ), timeFormat, 'pm')}
+            </span>
           </div>
         </div>
         <div class="wrapperForecast">

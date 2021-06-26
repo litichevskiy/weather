@@ -114,14 +114,14 @@ const store = {
   },
 
   init() {
-    // document.addEventListener('visibilitychange', () => {
-    //   if( !document.hidden ) {
-    //     if( Date.now() - this.invisibilityTime > LAST_UPDATE_TIME ) {
-    //       this.updateWeather();
-    //     }
-    //   }
-    //   else this.invisibilityTime = Date.now();
-    // }, false);
+    document.addEventListener('visibilitychange', () => {
+      if( !document.hidden ) {
+        if( Date.now() - this.invisibilityTime > LAST_UPDATE_TIME ) {
+          this.updateWeather();
+        }
+      }
+      else this.invisibilityTime = Date.now();
+    }, false);
 
     window.addEventListener('online', () => {
       this.onlineStatus = true;
