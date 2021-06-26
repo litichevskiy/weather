@@ -49,8 +49,8 @@ const formatWeatherData = ( weatherData ) => {
   const sunset = new Date( sunset_ts * 1000 ); //1000 because date_epoch in seconds
   const sunrise = new Date( sunrise_ts * 1000 ); //1000 because date_epoch in seconds
 
-  console.log( 'SUNSET :' sunset );
-  console.log( 'SUNRISE :' sunrise );
+  console.log( 'SUNSET :', sunset );
+  console.log( 'SUNRISE :', sunrise );
 
   const current_observation = {
     "pubDate": ts,
