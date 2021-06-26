@@ -182,7 +182,7 @@ function templateCard( data ) {
       `<div class="row">
         <div class="cell">
         <div class="cityName">${location.city}</div>
-        <div class="regionName">${location.country} ${location.region}</div>
+        <div class="regionName">${location.country}</div>
         <div class="containerDate">
           <small class="content">${format.formateToday(date)}</small>
           <small class="content monospaceNumber">

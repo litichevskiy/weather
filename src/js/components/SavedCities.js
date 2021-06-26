@@ -119,7 +119,7 @@ class SavedCities {
     this.listSities.innerHTML += list.reduce( ( total, item ) => {
       location = item.location;
       return total += `<li class="itemListSavedCities" data-id=${item.id}>
-        ${location.city} ${location.country} ${location.region}
+        ${location.city}, ${location.country}
         <div class="wrapperBtnDel">
           <button class="defaultBtn">
             <svg width="25px" height="25px" fill="#1f1d1d" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 774.266 774.266">
