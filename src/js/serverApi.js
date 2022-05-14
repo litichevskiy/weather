@@ -37,6 +37,21 @@ const serverApi = {
       response = false;
     }
     return response.data || false;
+  },
+
+  async getIsoAlpha( geonameid ) {
+    let response, isoAlpha2;
+
+    const url = `https://api.teleport.org/api/cities/geonameid:${geonameid}/`
+    try{
+      response = await getServerData( url );
+      if( response.status !== 200 ) throw new Error('unknow error');
+      isoAlpha2 = response.data['_links']['city:country']['href'].match(/[^iso_alpha2:][A-Z]/g)[0];
+    } catch( error ) {
+      console.error( error );
+      response = false;
+    }
+    return isoAlpha2 || false;
   }
 };
 

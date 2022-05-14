@@ -28,12 +28,15 @@ const store = {
     try{
       name = name.split(',');
       name = `${name[0]},${name[2] || name[1]}`;
-      weather = await serverApi.getWeather( name );
 
+      weather = await serverApi.getWeather( name );
       if( !weather.status ) {
-        showMessage('unknow', weather.message );
+        showMessage('unknow', typeof weather.message === 'string' ? weather.message : errorMessages.unknow() );
+        pubsub.publish('end-load-card-weather');
+        if( this.currentCitiId ) this.setNewCity( this.currentCitiId );
         throw new Error( weather.message );
       }
+
       weather = weather.data;
       weather._name = name;
       weather.geonameid = geonameid;
@@ -41,6 +44,7 @@ const store = {
       console.error( error );
       weather = false;
     }
+
     return weather;
   },
 
@@ -48,11 +52,12 @@ const store = {
     let weatherList, response;
     try{
       weatherList = await storage.getStorage();
+
       if( !weatherList ) throw new Error();
       weatherList = weatherList.listWeather;
-
       const itemWeather = getItemWeatherByKey( weatherList, 'id', this.currentCitiId );
-      response = await serverApi.getWeather( itemWeather._name );
+      const cityName = itemWeather.location.nameAlfa2Iso ? itemWeather.location.nameAlfa2Iso : itemWeather._name
+      response = await serverApi.getWeather( cityName );
 
       if( !response.status ) {
         showMessage('unknow', response.message );
@@ -63,6 +68,7 @@ const store = {
       response.id = itemWeather.id;
       response.geonameid = itemWeather.geonameid;
       response._name = itemWeather._name;
+      response.fullName = itemWeather.fullName
 
     } catch( error ) {
       console.error( error );
@@ -72,19 +78,24 @@ const store = {
   },
 
   setWeatherCard( response, num ) {
-    const { _name, location, geonameid } = response;
+    const { _name, location, geonameid, fullName } = response;
     const { astronomy, atmosphere, wind, localTime } = response.current_observation;
     const condition = response.current_observation.condition;
     const id = num || createId();
     const _updated = Date.now();
     const lastUpdate = new Date( response.current_observation.pubDate * 1000 ); //1000 because pubDate in seconds
     const forecast = response.forecasts;
+
+    if ( response.fullName ) {
+      location.regionFullName = response.fullName.split(',')[1];
+      location.nameAlfa2Iso = `${location.city}, ${location.region}`;
+    }
     return {
       units: units,
       astronomy, atmosphere,
       item:{ condition, forecast },
       location, wind, localTime,
-      lastUpdate, id, geonameid, _name, _updated
+      lastUpdate, id, geonameid, _name, _updated, fullName
     };
   },
 
@@ -111,6 +122,26 @@ const store = {
      (document.querySelector('.pulsingContainer')).style.display = 'block';
       this.isCardWeather = false;
     }
+  },
+
+  async getWeatherByISOCode ( fullName, geoId ) {
+    return new Promise (( resolve, reject ) => {
+        serverApi.getIsoAlpha( geoId )
+        .then( isoAlpha  => {
+          const cityName = fullName.match(/[a-zA-Z]+?,/i)[0];
+          serverApi.getWeather( `${cityName} ${isoAlpha}`, geoId )
+          .then( async ( response ) => {
+
+            const data = await this.addNewCiti( undefined, `${cityName} ${isoAlpha}`, geoId );
+            if ( !data.current_observation ) {
+              showMessage('unknowCiti', data._name);
+              pubsub.publish('show-block-search');
+            }
+            response.data.fullName = fullName
+            resolve( response.data );
+          });
+        })
+    });
   },
 
   init() {
@@ -185,42 +216,61 @@ const store = {
     pubsub.subscribe('selected-city', ( data ) => {
       if( this.notFound ) return;
       this.memoryCities = {};
+
       let selectedSiti = this.listSities[+data.index];
       let link = selectedSiti['_links']['city:item']['href'];
       let geoId = getGeonameId( link );
       let fullName = selectedSiti['matching_full_name'];
+
       this.listSities = [];
+
       pubsub.publish('hide-block-search');
       pubsub.publish('create-list-cityes', this.listSities );
       if ( this.weatherFor.includes( geoId ) ) {
         pubsub.publish('show-message', {message: errorMessages.weatherAdded( fullName )});
         return;
       }
+
       pubsub.publish('start-load-card-weather');
       this.addNewCiti( link, fullName, geoId )
-      .then(response => {
-        pubsub.publish('end-load-card-weather');
+      .then( async (response) => {
+        response.fullName = fullName;
         if( !response ) return showMessage('unknow' );
+        let res;
         if( !response.current_observation ) {
-          showMessage('unknowCiti', response._name);
-          pubsub.publish('show-block-search');
-          if( this.currentCitiId ) this.setNewCity( this.currentCitiId );
+          response = await this.getWeatherByISOCode( fullName, geoId );
+          const { city, country } = response.location;
+          response.fullName = fullName;
+          response.geonameid = geoId;
+          response._name = `${city}, ${country}`;
+          if( !response.current_observation ) {
+            showMessage('unknowCiti', response._name);
+            pubsub.publish('show-block-search');
+            if( this.currentCitiId ) this.setNewCity( this.currentCitiId );
+          }
+
+          return response;
         }
-        else{
-          let weatherCard = this.setWeatherCard( response );
-          storage.setItem( weatherCard )
-          .then( response => {
-            if( !response ) showMessage('unknow');
-            else{
-              this.lastUpdateTime = weatherCard._updated;
-              this.weatherFor.push( geoId );
-              pubsub.publish('create-card-weater', weatherCard );
-              pubsub.publish('create-list-saved-sities', [weatherCard] );
-              this.changeCurrentCity( weatherCard.id );
-            }
-          });
-        }
-      });
+
+        return response;
+      })
+      .then(  response => {
+
+        let weatherCard = this.setWeatherCard( response );
+        storage.setItem( weatherCard )
+        .then( response => {
+          if( !response ) showMessage('unknow');
+          else{
+            this.lastUpdateTime = weatherCard._updated;
+            this.weatherFor.push( geoId );
+
+            pubsub.publish('end-load-card-weather');
+            pubsub.publish('create-card-weater', weatherCard );
+            pubsub.publish('create-list-saved-sities', [weatherCard] );
+            this.changeCurrentCity( weatherCard.id );
+          }
+        })
+      })
     });
 
     pubsub.subscribe('update-weather-card', () => {
@@ -325,6 +375,7 @@ const store = {
       }
       else{
         response = this.setWeatherCard( response, response.id );
+
         storage.updateItemWeather( response )
         .then( response => {
           if( !response ) return showMessage('unknow');
@@ -337,18 +388,18 @@ const store = {
   },
 
   changeCurrentCity( id ) {
-    storage.setCurrentSity( id )
+    return storage.setCurrentSity( id )
     .then( response => {
       if( !response ) showMessage('unknow');
       this.currentCitiId = response.id;
+      return this.currentCitiId;
     });
   },
 
   initApp() {
     storage.init( this.settings )
-    .then( response => {
+    .then( async response => {
       const { settings, listWeather } = response;
-
       this.settings = settings;
       this.weatherFor = listWeather.map(item => item.geonameid);
       this.isCardWeather = ( listWeather.length > 0 ) ? true : false;
@@ -356,6 +407,8 @@ const store = {
 
       if( response.currentSity ) this.currentCitiId = response.currentSity;
       if ( listWeather.length > 0 ) {
+
+        if ( !this.currentCitiId ) await this.changeCurrentCity( listWeather[0].id )
 
         pubsub.publish('create-list-saved-sities', listWeather );
         const itemWeather = getItemWeatherByKey( listWeather, 'id', this.currentCitiId );

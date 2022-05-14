@@ -17,8 +17,15 @@ class ListSities {
 
   createListCityes( list ) {
     list = list || [];
+
     let result = list.reduce( ( previousItem, item, index ) => {
-      previousItem += `<li class="itemListSities" data-index=${index}>${item.matching_full_name}</li>`;
+      previousItem += `
+      <li
+        class="itemListSities"
+        data-index=${index}
+        data-full-name="${item.matching_full_name}">
+        ${item.matching_full_name}
+      </li>`;
       return previousItem;
     }, '');
     this.container.innerHTML = result;

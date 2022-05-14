@@ -182,7 +182,8 @@ function templateCard( data ) {
       `<div class="row">
         <div class="cell">
         <div class="cityName">${location.city}</div>
-        <div class="regionName">${location.country}</div>
+        <div class="regionName">${location.regionFullName.trim() === location.city.trim() ? '' : location.regionFullName}</div>
+        <div class="countryName">${location.country}</div>
         <div class="containerDate">
           <small class="content">${format.formateToday(date)}</small>
           <small class="content monospaceNumber">
