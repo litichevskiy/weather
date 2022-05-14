@@ -9,6 +9,9 @@
     "build": "NODE_ENV=production webpack",
     "heroku-postbuild": "echo Skip build on Heroku"
   },
+  "engines": {
+    "node": "10.x"
+  },
   "dependencies": {
     "compression": "^1.7.4",
     "express": "^4.17.1",
