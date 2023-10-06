@@ -1,13 +1,16 @@
 const webpack = require('webpack');
 const path = require('path');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const autoprefixer = require('autoprefixer');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+
 const NODE_ENV = process.env.NODE_ENV || "development";
 const IS_PRODUCTION = NODE_ENV === "production";
 
 module.exports = [
   {
+    mode: NODE_ENV,
+    devtool: !IS_PRODUCTION ? 'source-map' : false,
     entry: ['./src/js/sw.js'],
     output: {
       path: path.resolve(__dirname, './dist/js'),
@@ -17,6 +20,8 @@ module.exports = [
     watch: !IS_PRODUCTION,
   },
   {
+    mode: NODE_ENV,
+    devtool: !IS_PRODUCTION ? 'source-map' : false,
     entry: ['babel-polyfill'],
     output: {
       path: path.resolve(__dirname, './dist/vendors'),
@@ -26,6 +31,10 @@ module.exports = [
     watch: !IS_PRODUCTION,
   },
   {
+    watch: !IS_PRODUCTION,
+    devtool: !IS_PRODUCTION ? 'source-map' : false,
+    // item.optimization = { minimize: true }
+    mode: NODE_ENV,
     entry: ['./src/js/index.js', './src/style/index.scss'],
     output: {
       path: path.resolve(__dirname, './dist/js'),
@@ -34,32 +43,34 @@ module.exports = [
     resolve: {
         extensions: ['.scss', '.js', ' '],
     },
+    watchOptions: {
+      ignored: /node_modules/,
+    },
     plugins: [
-      new ExtractTextPlugin('../css/bundle.css'),
-      new webpack.DefinePlugin ({
-        'process.env.NODE_ENV': JSON.stringify ( NODE_ENV )
+      new CleanWebpackPlugin(),
+      new MiniCssExtractPlugin({
+        filename: "../styles/[name].css",
+        chunkFilename: "[id].css",
       }),
     ],
-    devtool: IS_PRODUCTION ? 'none' : 'source-map',
-    watch: !IS_PRODUCTION,
     module: {
       rules: [
         {
-          test: /\.js?$/,
-          exclude: /\/node_modules\//,
-          use: {
-              loader: 'babel-loader',
-              options: {
-                  presets: ['es2015', 'stage-0', 'env']
-              }
-          }
+          test: /\.(js)$/,
+          exclude: /node_modules/,
+          use: ['babel-loader']
         },
         {
           test: /\.(png|jp(e*)g|svg)$/,
           exclude: /\/node_modules\//,
           use: [{
-              loader: 'url-loader',
-          }]
+            loader: 'file-loader',
+            options:{
+              limit:15.000,
+              name: '[name].[ext]',
+              outputPath: '../images'
+            }
+          }],
         },
         {
           test: /\.(woff(2)?|ttf|eot|svg)$/,
@@ -72,48 +83,32 @@ module.exports = [
           }]
         },
         {
-          exclude: /\/node_modules\//,
           test: /\.scss$/,
-          use: ExtractTextPlugin.extract({
-            use: [
-              {
-                loader: 'css-loader',
-                options: {
-                  sourceMap: !IS_PRODUCTION ,
-                  minimize:  IS_PRODUCTION,
-                }
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                    plugins: [
-                        autoprefixer({
-                            browsers:['last 5 version']
-                        })
-                    ],
-                    sourceMap: !IS_PRODUCTION
-                }
-              },
-              {
-                loader: 'sass-loader',
-                options: { sourceMap: !IS_PRODUCTION }
+          use: [
+            {
+              loader: MiniCssExtractPlugin.loader
+            },
+            {
+              loader: 'css-loader',
+              options: {
+                sourceMap: !IS_PRODUCTION
               }
-            ]
-          })
+            },
+            {
+              loader: 'sass-loader',
+              options: {
+                sourceMap: !IS_PRODUCTION,
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                sourceMap: !IS_PRODUCTION,
+              }
+            },
+          ],
         }
       ]
     }
   }
 ];
-
-if( IS_PRODUCTION ) {
-  module.exports.forEach( item => {
-    item.plugins.push(
-      new UglifyJsPlugin({
-          uglifyOptions:{
-              minimize: true
-          }
-      })
-    )
-  });
-};

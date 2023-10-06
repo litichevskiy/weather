@@ -3,10 +3,8 @@ const express = require('express');
 const compression = require('compression');
 const path = require('path');
 const app = express();
-const sslRedirect = require('heroku-ssl-redirect');
 const getWeather = require('./getWeather');
 
-app.use(sslRedirect(['other','development','production']));
 app.use(compression({filter: shouldCompress}))
 app.use('/dist', express.static(__dirname + '/dist'));
 app.use('/images', express.static(__dirname + '/src/images'));

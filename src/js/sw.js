@@ -1,10 +1,10 @@
-const CACHE_NAME = ['v-4-1652525729146'];
+const CACHE_NAME = ['v-4-1696608786055'];
 const FILES_TO_CACHE = [
   '/',
   '/manifest.json',
   '/dist/js/bundle.js',
   '/dist/vendors/vendors.js',
-  '/dist/css/bundle.css',
+  '/dist/styles/main.css',
   '/images/weather/broken-clouds.png',
   '/images/weather/clear-sky.png',
   '/images/weather/drizzle.png',
