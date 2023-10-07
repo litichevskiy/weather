@@ -3,10 +3,20 @@
   "buildCommand": "npm run build",
   "cleanUrls": true,
   "functions": {
-    "dist": {"dist/**/*"},
-    "images": {"/src/images/**/*"},
-    "fonts": {"/dist/fonts/**/*"},
-    "sw.js": {"/dist/js/sw.js"},
-    "manifest.json": {"/manifest.json"}
+    "dist": {
+      "includeFiles": "dist/**/*"
+    },
+    "images": {
+      "includeFiles": "/src/images/**/*"
+    },
+    "fonts": {
+      "includeFiles": "/dist/fonts/**/*"
+    },
+    "sw.js": {
+      "includeFiles": "/dist/js/sw.js"
+    },
+    "manifest.json": {
+      "includeFiles": "/manifest.json"
+    }
   }
 }
