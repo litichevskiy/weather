@@ -1,22 +1,15 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "cleanUrls": true,
-  "functions": {
-    "dist": {
-      "includeFiles": "dist/**/*"
-    },
-    "images": {
-      "includeFiles": "/src/images/**/*"
-    },
-    "fonts": {
-      "includeFiles": "/dist/fonts/**/*"
-    },
-    "sw.js": {
-      "includeFiles": "/dist/js/sw.js"
-    },
-    "manifest.json": {
-      "includeFiles": "/manifest.json"
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@now/node"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ]
 }

@@ -16,7 +16,7 @@ app.use('/sw.js', express.static( __dirname + '/dist/js/sw.js', {
 }));
 app.use('/manifest.json', express.static(__dirname + '/manifest.json'));
 app.get('/', (req,res) => {
-  res.sendFile(path.join(__dirname+'/index.html'));
+  res.sendFile(path.join(__dirname+'/view/index.html'));
 });
 
 app.get('/get-weather', ( req, res ) => {
@@ -35,6 +35,10 @@ app.get('/get-weather', ( req, res ) => {
   .catch(error => {
     res.send({status: '', message: error });
   });
+});
+
+app.use(( req, res ) => {
+  res.sendFile(path.join(__dirname+'/view/pageNotFound.html'));
 });
 
 app.listen( PORT, () => console.log(`server listening on port ${PORT}`));
