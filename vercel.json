@@ -1,0 +1,12 @@
+{
+  "installCommand": "npm install",
+  "buildCommand": "npm run build",
+  "cleanUrls": true,
+  "functions": {
+    "dist": "dist/**/*",
+    "images": "/src/images/**/*",
+    "fonts": "/dist/fonts/**/*",
+    "sw.js": "/dist/js/sw.js",
+    "manifest.json": "/manifest.json"
+  }
+}
