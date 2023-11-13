@@ -16,3 +16,4 @@ npm install
 npm run build
 ```
 and open: [localhost:8000](http://localhost:8000)
+or [or look here](https://weather-litichevskiys-projects.vercel.app/)
