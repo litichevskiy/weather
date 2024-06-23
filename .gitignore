@@ -4,3 +4,5 @@
 *.map
 package-lock.json
 webpack.config.sublime-workspace
+.env
+.vercel

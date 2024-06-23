@@ -4,10 +4,14 @@
   https://www.weatherapi.com/docs/
   https://openweathermap.org/api
 */
+
+require('dotenv').config();
+
+const apikey= process.env.API_KEY;
 const fetch = require('node-fetch');
 const crg = require('country-reverse-geocoding').country_reverse_geocoding();
 
-const API_KEY = '7c0a91352708446eb11afe87c8d4ca6c';
+const API_KEY = apikey;
 const WEATHER_API_URL = 'https://api.weatherbit.io/v2.0/forecast/daily';
 const FORECASTS_DAYS = 6;
 const DEFAULT_QUERY_PARAM = `?key=${API_KEY}&days=${FORECASTS_DAYS}`;
