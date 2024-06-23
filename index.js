@@ -47,3 +47,5 @@ function shouldCompress (req, res) {
   if (req.headers['x-no-compression']) return false;
   else return compression.filter(req, res);
 };
+
+module.exports = app;
