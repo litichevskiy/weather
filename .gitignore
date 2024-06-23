@@ -1,5 +1,6 @@
 /node_modules
 /certificate
+.vercel
 .tern-project
 *.map
 package-lock.json
